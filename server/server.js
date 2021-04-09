@@ -3,6 +3,10 @@ const express = require("express");
 const { ApolloServer, UserInputError } = require("apollo-server-express");
 const { GraphQLScalarType } = require("graphql");
 const { Kind } = require("graphql/language");
+const { MongoClient } = require("mongodb");
+
+const url = "mongodb://localhost/issuetracker";
+let db;
 
 // ------------- In-memory Database --------------
 
@@ -48,7 +52,7 @@ const GraphQLDate = new GraphQLScalarType({
     },
 
     parseLiteral(ast) {
-        // the kind property indicates the type of the token 
+        // the kind property indicates the type of the token
         // that the parser found
         if (ast.kind == Kind.STRING) {
             const value = new Date(ast.value);
@@ -57,7 +61,7 @@ const GraphQLDate = new GraphQLScalarType({
     },
 });
 
-// ---------- Resolvers -------------------
+// ---------- Resolvers For GraphQL Fields -------------------
 
 const resolvers = {
     Query: {
@@ -78,8 +82,9 @@ function setAboutMessage(_, { message }) {
 }
 
 // resolver func for isseList field
-function issueList() {
-    return issuesDB;
+async function issueList() {
+    const issues = await db.collection('issues').find({}).toArray();
+    return issues;
 }
 
 // validating utility func for incoming post data
@@ -106,7 +111,7 @@ function issueAdd(_, { issue }) {
     return issue;
 }
 
-// -------- Server Initialization --------------------
+// -------- Integrating ApolloServer to Express  --------------------
 
 const server = new ApolloServer({
     typeDefs: fs.readFileSync("./server/schema.graphql", "utf-8"),
@@ -123,7 +128,28 @@ app.use(express.static("public"));
 
 server.applyMiddleware({ app, path: "/graphql" });
 
-//initiate the server and start listening to the port
-app.listen(3000, function () {
-    console.log("App started on port 3000");
-});
+// ---------- Connect to database and Initialize Express server -------------
+
+// Utility function for mongodb server connection
+async function connectToDb() {
+    const client = new MongoClient(url, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+
+    await client.connect();
+    console.log("Connected to MongoDb server: ", url);
+    db = client.db();
+}
+
+
+(async function () {
+    try {
+        await connectToDb();
+        app.listen(3000, function () {
+            console.log("App started on port 3000");
+        });
+    } catch (err) {
+        console.log("Error: ", err);
+    }
+})();
