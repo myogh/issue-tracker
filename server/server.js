@@ -12,27 +12,6 @@ let db;
 
 let aboutMessage = "Issue Tracker API v1.0";
 
-const issuesDB = [
-    {
-        id: 1,
-        status: "New",
-        owner: "Ravan",
-        effort: 5,
-        created: new Date("2019-01-15"),
-        due: undefined,
-        title: "Error in console when clicking Add",
-    },
-    {
-        id: 2,
-        status: "Assigned",
-        owner: "Eddie",
-        effort: 14,
-        created: new Date("2019-01-16"),
-        due: new Date("2019-02-01"),
-        title: "Missing bottom border on panel",
-    },
-];
-
 // ----- Resolver func for custom GraphQLDate ------------
 
 const GraphQLDate = new GraphQLScalarType({
@@ -83,9 +62,11 @@ function setAboutMessage(_, { message }) {
 
 // resolver func for isseList field
 async function issueList() {
-    const issues = await db.collection('issues').find({}).toArray();
+    const issues = await db.collection("issues").find({}).toArray();
     return issues;
 }
+
+// ------ issueAdd resolver ---------------
 
 // validating utility func for incoming post data
 function validateIssue(issue) {
@@ -101,14 +82,31 @@ function validateIssue(issue) {
     }
 }
 
+// incrementing the count by one in the document
+// with _id of 'issues' in 'counters' collection
+async function getNextSequence(name) {
+    const result = await db
+        .collection("counters")
+        .findOneAndUpdate(
+            { _id: name },
+            { $inc: { current: 1 } },
+            { returnOriginal: false }
+        );
+    return result.value.current;
+}
+
 // resolver func for issueAdd field
-function issueAdd(_, { issue }) {
+async function issueAdd(_, { issue }) {
     validateIssue(issue);
     issue.created = new Date();
-    issue.id = issuesDB.length + 1;
+    issue.id = await getNextSequence("issues");
 
-    issuesDB.push(issue);
-    return issue;
+    // The insert() returns an object that contains the status of the operation.
+    const result = await db.collection("issues").insertOne(issue);
+    const savedIssue = await db
+        .collection("issues")
+        .findOne({ _id: result.insertedId });
+    return savedIssue;
 }
 
 // -------- Integrating ApolloServer to Express  --------------------
@@ -141,7 +139,6 @@ async function connectToDb() {
     console.log("Connected to MongoDb server: ", url);
     db = client.db();
 }
-
 
 (async function () {
     try {

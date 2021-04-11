@@ -29,6 +29,12 @@ db.issues.insertMany(issuesDB);
 const count = db.issues.count();
 print("Inserted", count, "issues");
 
+// creating a document with _id of 'issues'... 
+// dedicated to the 'counts' of issues...
+// in a collection called 'counters'
+db.counters.remove({_id: 'issues'})
+db.counters.insert({_id: 'issues', current: count})
+
 // {id: 1} is the field we would like to index
 // 1 specifies the index being an ascending one
 // {unique: true} creates a unique index which will reject...
