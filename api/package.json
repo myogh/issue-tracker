@@ -1,0 +1,25 @@
+{
+  "name": "issue-tracker-api",
+  "version": "1.0.0",
+  "description": "Issue Tracker Application API",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon -e js,graphql -w . -w .env server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "amh.rav@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server-express": "^2.21.0",
+    "dotenv": "^6.2.0",
+    "express": "^4.17.1",
+    "graphql": "^15.5.0",
+    "mongodb": "^3.6.5",
+    "nodemon": "^1.19.4"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.22.1"
+  }
+}

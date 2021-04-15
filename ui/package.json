@@ -1,27 +1,32 @@
 {
-  "name": "issue-tracker",
+  "name": "issue-tracker-ui",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon -w server -e js,graphql server/server.js",
+    "start": "nodemon -w uiserver.js -w .env uiserver.js",
     "compile": "babel src --out-dir public",
+    "lint": "eslint . --ext js,jsx --ignore-pattern public",
     "watch": "babel src --out-dir public --watch --verbose",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "amh.rav@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "apollo-server-express": "^2.21.0",
+    "dotenv": "^6.2.0",
     "express": "^4.17.1",
-    "graphql": "^15.5.0",
-    "mongodb": "^3.6.5",
+    "http-proxy-middleware": "^0.21.0",
     "nodemon": "^1.19.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.0",
     "@babel/core": "^7.13.1",
     "@babel/preset-env": "^7.13.0",
-    "@babel/preset-react": "^7.12.13"
+    "@babel/preset-react": "^7.12.13",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.23.2"
   }
 }

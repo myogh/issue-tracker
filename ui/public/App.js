@@ -26,7 +26,13 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-//----------- Issue Filter Component ------------------
+/* eslint "react/react-in-jsx-scope": "off" */
+
+/* globals React ReactDOM PropTypes */
+
+/* eslint "react/jsx-no-undef": "off" */
+// ----------- Issue Filter Component ------------------
+// eslint-disable-next-line react/prefer-stateless-function
 var IssueFilter = /*#__PURE__*/function (_React$Component) {
   _inherits(IssueFilter, _React$Component);
 
@@ -49,22 +55,25 @@ var IssueFilter = /*#__PURE__*/function (_React$Component) {
 }(React.Component); // -------- Issue Row Component ---------------
 
 
-function IssueRow(props) {
+function IssueRow(_ref) {
+  var issue = _ref.issue;
+
   /**
    * Represents each row of issue in a IssueTable.
    * Props: issue object
    */
-  var issue = props.issue;
-  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.status), /*#__PURE__*/React.createElement("td", null, issue.owner), /*#__PURE__*/React.createElement("td", null, issue.created.toDateString()), /*#__PURE__*/React.createElement("td", null, issue.effort), /*#__PURE__*/React.createElement("td", null, issue.due ? issue.due.toDateString() : " "), /*#__PURE__*/React.createElement("td", null, issue.title));
+  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.status), /*#__PURE__*/React.createElement("td", null, issue.owner), /*#__PURE__*/React.createElement("td", null, issue.created.toDateString()), /*#__PURE__*/React.createElement("td", null, issue.effort), /*#__PURE__*/React.createElement("td", null, issue.due ? issue.due.toDateString() : ' '), /*#__PURE__*/React.createElement("td", null, issue.title));
 } // --------- Issue Table Component -----------------
 
 
-function IssueTable(props) {
+function IssueTable(_ref2) {
+  var issues = _ref2.issues;
+
   /**
    * Displays a list of issues in a table.
    * Props: list of issue objects.
    */
-  var issueRows = props.issues.map(function (issue) {
+  var issueRows = issues.map(function (issue) {
     return /*#__PURE__*/React.createElement(IssueRow, {
       key: issue.id,
       issue: issue
@@ -110,9 +119,10 @@ var IssueAdd = /*#__PURE__*/function (_React$Component2) {
         title: form.title.value,
         due: new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 10).toISOString()
       };
-      this.props.createIssue(issue);
-      form.owner.value = "";
-      form.title.value = "";
+      var createIssue = this.props.createIssue;
+      createIssue(issue);
+      form.owner.value = '';
+      form.title.value = '';
     }
   }, {
     key: "render",
@@ -128,17 +138,22 @@ var IssueAdd = /*#__PURE__*/function (_React$Component2) {
         type: "text",
         name: "title",
         placeholder: "Title"
-      }), /*#__PURE__*/React.createElement("button", null, "Add"));
+      }), /*#__PURE__*/React.createElement("button", {
+        type: "submit"
+      }, "Add"));
     }
   }]);
 
   return IssueAdd;
-}(React.Component); // ---------- Utility function for fetching data from server ----------
+}(React.Component);
 
+IssueAdd.propTypes = {
+  createIssue: PropTypes.func.isRequired
+}; // ---------- Utility function for fetching data from server ----------
 
-var dateRegex = new RegExp("^\\d\\d\\d\\d-\\d\\d-\\d\\d");
+var dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 
-function jsonDateReviver(key, value) {
+function jsonDateReviver(_, value) {
   if (dateRegex.test(value)) return new Date(value);
   return value;
 }
@@ -164,10 +179,10 @@ function _graphQLFetch() {
             variables = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : {};
             _context3.prev = 1;
             _context3.next = 4;
-            return fetch("/graphql", {
-              method: "POST",
+            return fetch(window.ENV.UI_API_ENDPOINT, {
+              method: 'POST',
               headers: {
-                "Content-type": "application/json"
+                'Content-type': 'application/json'
               },
               body: JSON.stringify({
                 query: query,
@@ -187,8 +202,8 @@ function _graphQLFetch() {
             if (result.errors) {
               error = result.errors[0];
 
-              if (error.extensions.code == "BAD_USER_INPUT") {
-                details = error.extensions.exception.errors.join("\n ");
+              if (error.extensions.code === 'BAD_USER_INPUT') {
+                details = error.extensions.exception.errors.join('\n ');
                 alert("".concat(error.message, ":\n ").concat(details));
               } else {
                 alert("".concat(error.extensions.code, ": ").concat(error.message));
@@ -202,8 +217,9 @@ function _graphQLFetch() {
             _context3.t0 = _context3["catch"](1);
             // cathing the transport error
             alert("Error in sending data to server: ".concat(_context3.t0.message));
+            return _context3.abrupt("return", null);
 
-          case 16:
+          case 17:
           case "end":
             return _context3.stop();
         }
@@ -327,8 +343,9 @@ var IssueList = /*#__PURE__*/function (_React$Component3) {
   }, {
     key: "render",
     value: function render() {
+      var issues = this.state.issues;
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Issue Tracker"), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
-        issues: this.state.issues
+        issues: issues
       }), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueAdd, {
         createIssue: this.createIssue
       }), /*#__PURE__*/React.createElement("hr", null));
@@ -339,4 +356,4 @@ var IssueList = /*#__PURE__*/function (_React$Component3) {
 }(React.Component);
 
 var element = /*#__PURE__*/React.createElement(IssueList, null);
-ReactDOM.render(element, document.getElementById("contents"));
+ReactDOM.render(element, document.getElementById('contents'));
