@@ -4,6 +4,7 @@
         "node": "true"
     },
     rules: {
-        "no-console": "off"
+        "no-console": "off",
+        "max-len": ["error", {"code": 80}]
     }
 }
