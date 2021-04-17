@@ -1,3 +1,5 @@
+import React from 'react';
+
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
 import IssueAdd from './IssueAdd.jsx';
@@ -44,6 +46,7 @@ export default class IssueList extends React.Component {
     /**
      * Fetches list of issues from the database via API call.
      * Updates the data state on the client side.
+     * Yadi yada..
      */
     const query = `query{
         issueList {

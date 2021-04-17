@@ -1,3 +1,4 @@
+import React from 'react';
 // ------------ Issue Add Component -------------
 
 export default class IssueAdd extends React.Component {
@@ -16,6 +17,7 @@ export default class IssueAdd extends React.Component {
      * Retrieves values from the form object.
      * Forms a new issue and call createIssue()
      * Empty the form object
+     * dodod
      */
     e.preventDefault();
     const form = document.forms.issueAdd;

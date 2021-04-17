@@ -1,3 +1,4 @@
+import React from 'react'
 // -------- Issue Row Component ---------------
 
 function IssueRow({ issue }) {

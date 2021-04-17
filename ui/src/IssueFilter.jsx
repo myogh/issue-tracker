@@ -1,3 +1,4 @@
+import React from 'react';
 // ----------- Issue Filter Component ------------------
 
 // eslint-disable-next-line react/prefer-stateless-function
