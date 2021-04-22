@@ -4,6 +4,7 @@ import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
 import IssueAdd from './IssueAdd.jsx';
 import graphQLFetch from './graphQLFetch.js';
+import URLSearchParams from 'url-search-params';
 // ----------- Issue List Component ----------------
 
 export default class IssueList extends React.Component {
@@ -18,6 +19,21 @@ export default class IssueList extends React.Component {
 
   componentDidMount() {
     this.loadData();
+  }
+
+  componentDidUpdate(prevProps) {
+    // to update state on url change for filtering
+    const {
+      location: { prevSearch },
+    } = prevProps;
+
+    const {
+      location: { search },
+    } = this.props;
+
+    if (prevSearch !== search) {
+      this.loadData();
+    }
   }
 
   async createIssue(samIssue) {
@@ -42,20 +58,28 @@ export default class IssueList extends React.Component {
       this.loadData();
     }
   }
+
   async loadData() {
     /**
      * Fetches list of issues from the database via API call.
      * Updates the data state on the client side.
-     * Yadi yada..
      */
-    const query = `query{
-        issueList {
+    const {
+      location: { search },
+    } = this.props;
+
+    const params = new URLSearchParams(search);
+    const vars = {};
+    if (params.get('status')) vars.status = params.get('status');
+
+    const query = `query issueList($status: StatusType){
+        issueList(status: $status) {
             id title status owner
             created effort due
             }
         }`;
 
-    const data = await graphQLFetch(query);
+    const data = await graphQLFetch(query, vars);
     if (data) {
       this.setState({ issues: data.issueList });
     }

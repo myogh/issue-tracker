@@ -45,4 +45,3 @@ export default class IssueAdd extends React.Component {
     );
   }
 }
-

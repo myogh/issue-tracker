@@ -1,10 +1,37 @@
 import React from 'react';
-// ----------- Issue Filter Component ------------------
+import { withRouter } from 'react-router-dom';
 
 // eslint-disable-next-line react/prefer-stateless-function
-export default class IssueFilter extends React.Component {
+class IssueFilter extends React.Component {
+  constructor() {
+    super();
+    this.onChangeStatus = this.onChangeStatus.bind(this);
+  }
+
+  onChangeStatus(e) {
+    const status = e.target.value;
+
+    // progmatic navigation
+    const { history } = this.props;
+    history.push({
+      pathname: '/issues',
+      search: status ? `?status=${status}` : '',
+    });
+  }
+
   render() {
-    return <div>This is the placeholder for IssueFilter</div>;
+    return (
+      <div>
+        <select onChange={this.onChangeStatus}>
+          <option value="">(All issues)</option>
+          <option value="New">New</option>
+          <option value="Assigned">Assigned</option>
+          <option value="Fixed">Fixed</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+    );
   }
 }
 
+export default withRouter(IssueFilter);
