@@ -12,6 +12,13 @@ async function list(_, { status }) {
   return issues;
 }
 
+// resolver func for issue field
+async function get(_, { id }) {
+  const db = getDb();
+  const issue = await db.collection('issues').findOne({ id });
+  return issue;
+}
+
 // validating utility func for incoming post data
 function validate(issue) {
   const errors = [];
@@ -41,4 +48,4 @@ async function add(_, { issue }) {
   return savedIssue;
 }
 
-module.exports = { list, add };
+module.exports = { list, add, get };

@@ -10,6 +10,7 @@ const resolvers = {
   Query: {
     about: about.setAboutMessage,
     issueList: issue.list,
+    issue: issue.get,
   },
   Mutation: {
     setAboutMessage: about.setAboutMessage,

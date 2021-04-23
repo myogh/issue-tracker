@@ -1,12 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, withRouter } from 'react-router-dom';
 // -------- Issue Row Component ---------------
 
-function IssueRow({ issue }) {
+const IssueRow = withRouter(({ issue, location: { search } }) => {
   /**
    * Represents each row of issue in a IssueTable.
-   * Props: issue object
+   * Props: issue from Table, and location from withRouter
    */
+
+  const selectLocation = { pathname: `/issues/${issue.id}`, search };
   return (
     <tr>
       <td>{issue.id}</td>
@@ -17,11 +19,13 @@ function IssueRow({ issue }) {
       <td>{issue.due ? issue.due.toDateString() : ' '}</td>
       <td>{issue.title}</td>
       <td>
-        <Link to={`/#/edit/${issue.id}`}>edit</Link>
+        <Link to={`/edit/${issue.id}`}>edit</Link>
+        {' | '}
+        <NavLink to={selectLocation}>info</NavLink>
       </td>
     </tr>
   );
-}
+});
 
 // --------- Issue Table Component -----------------
 
@@ -30,7 +34,7 @@ export default function IssueTable({ issues }) {
    * Displays a list of issues in a table.
    * Props: list of issue objects.
    */
-  const issueRows = issues.map((issue) => (
+  const issueRows = issues.map(issue => (
     <IssueRow key={issue.id} issue={issue} />
   ));
   return (

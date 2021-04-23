@@ -4,7 +4,9 @@
         "browser": true
     },
     "rules": {
-        "import/extensions": ["error", "always", {"ignorePackages": true}]
+        "import/extensions": ["error", "always", {"ignorePackages": true}],
         "react/prop-types": "off",
+        "object-curly-newline": ["error", "never"],
+        "max-len": ["error", {"code": 80}],
     }
 }

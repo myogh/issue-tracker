@@ -1,10 +1,12 @@
 import React from 'react';
 
+import URLSearchParams from 'url-search-params';
+import { Route } from 'react-router-dom';
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
 import IssueAdd from './IssueAdd.jsx';
+import IssueDetail from './IssueDetail.jsx';
 import graphQLFetch from './graphQLFetch.js';
-import URLSearchParams from 'url-search-params';
 // ----------- Issue List Component ----------------
 
 export default class IssueList extends React.Component {
@@ -23,13 +25,9 @@ export default class IssueList extends React.Component {
 
   componentDidUpdate(prevProps) {
     // to update state on url change for filtering
-    const {
-      location: { prevSearch },
-    } = prevProps;
+    const { location: { prevSearch } } = prevProps;
 
-    const {
-      location: { search },
-    } = this.props;
+    const { location: { search } } = this.props;
 
     if (prevSearch !== search) {
       this.loadData();
@@ -64,9 +62,7 @@ export default class IssueList extends React.Component {
      * Fetches list of issues from the database via API call.
      * Updates the data state on the client side.
      */
-    const {
-      location: { search },
-    } = this.props;
+    const { location: { search } } = this.props;
 
     const params = new URLSearchParams(search);
     const vars = {};
@@ -87,6 +83,8 @@ export default class IssueList extends React.Component {
 
   render() {
     const { issues } = this.state;
+    const { match } = this.props;
+
     return (
       <React.Fragment>
         <h1>Issue Tracker</h1>
@@ -97,6 +95,7 @@ export default class IssueList extends React.Component {
         <hr />
         <IssueAdd createIssue={this.createIssue} />
         <hr />
+        <Route path={`${match.path}/:id`} component={IssueDetail} />
       </React.Fragment>
     );
   }
