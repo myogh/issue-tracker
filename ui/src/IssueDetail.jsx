@@ -42,7 +42,7 @@ export default class IssueDetail extends React.Component {
     const { issue: { description } } = this.state;
     return (
       <div>
-        <h3>Description:</h3>
+        <h3>Description haha hoho hee:</h3>
         <pre>{description}</pre>
       </div>
     );
