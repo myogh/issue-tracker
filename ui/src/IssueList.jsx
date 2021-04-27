@@ -1,13 +1,12 @@
 import React from 'react';
 
-import URLSearchParams from 'url-search-params';
+import 'url-search-params-polyfill';
 import { Route } from 'react-router-dom';
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
 import IssueAdd from './IssueAdd.jsx';
 import IssueDetail from './IssueDetail.jsx';
 import graphQLFetch from './graphQLFetch.js';
-// ----------- Issue List Component ----------------
 
 export default class IssueList extends React.Component {
   /**
@@ -25,9 +24,13 @@ export default class IssueList extends React.Component {
 
   componentDidUpdate(prevProps) {
     // to update state on url change for filtering
-    const { location: { prevSearch } } = prevProps;
+    const {
+      location: { prevSearch },
+    } = prevProps;
 
-    const { location: { search } } = this.props;
+    const {
+      location: { search },
+    } = this.props;
 
     if (prevSearch !== search) {
       this.loadData();
@@ -62,14 +65,22 @@ export default class IssueList extends React.Component {
      * Fetches list of issues from the database via API call.
      * Updates the data state on the client side.
      */
-    const { location: { search } } = this.props;
+    const {
+      location: { search },
+    } = this.props;
 
     const params = new URLSearchParams(search);
     const vars = {};
     if (params.get('status')) vars.status = params.get('status');
 
-    const query = `query issueList($status: StatusType){
-        issueList(status: $status) {
+    const effortMin = parseInt(params.get('effortMin'), 10);
+    if (!Number.isNaN(effortMin)) vars.effortMin = effortMin;
+
+    const effortMax = parseInt(params.get('effortMax'), 10);
+    if (!Number.isNaN(effortMax)) vars.effortMax = effortMax;
+
+    const query = `query issueList($status: StatusType, $effortMin: Int, $effortMax: Int){
+        issueList(status: $status, effortMin: $effortMin, effortMax: $effortMax) {
             id title status owner
             created effort due
             }

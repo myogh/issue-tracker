@@ -2,11 +2,17 @@ const { UserInputError } = require('apollo-server-express');
 const { getDb, getNextSequence } = require('./db.js');
 
 // resolver func for isseList field
-async function list(_, { status }) {
+async function list(_, { status, effortMin, effortMax }) {
   const db = getDb();
 
   const filter = {};
   if (status) filter.status = status;
+
+  if (effortMin !== undefined || effortMax !== undefined) {
+    filter.effort = {};
+    if (effortMin !== undefined) filter.effort.$gte = effortMin;
+    if (effortMax !== undefined) filter.effort.$lte = effortMax;
+  }
 
   const issues = await db.collection('issues').find(filter).toArray();
   return issues;
