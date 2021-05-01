@@ -1,14 +1,16 @@
 import React from 'react';
 import graphQLFetch from './graphQLFetch.js';
 import NumInput from './NumInput.jsx';
+import DateInput from './DateInput.jsx';
 import { Link } from 'react-router-dom';
 
 export default class IssueEdit extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { issue: {} };
+    this.state = { issue: {}, invalidFields: {} };
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onValidityChange = this.onValidityChange.bind(this);
   }
 
   componentDidMount() {
@@ -31,6 +33,15 @@ export default class IssueEdit extends React.Component {
     if (prevId !== id) {
       this.loadData();
     }
+  }
+
+  onValidityChange(e, valid) {
+    const { name } = e.target;
+    this.setState((prevState) => {
+      const invalidFields = { ...prevState.invalidFields, [name]: !valid };
+      if (valid) delete invalidFields[name];
+      return { invalidFields };
+    });
   }
 
   onChange(e, naturalValue) {
@@ -61,13 +72,12 @@ export default class IssueEdit extends React.Component {
 
     if (data.issue) {
       const { issue } = data;
-      issue.due = issue.due ? issue.due.toDateString() : '';
       issue.created = issue.created ? issue.created.toDateString() : '';
       issue.owner = issue.owner != null ? issue.owner : '';
       issue.description = issue.description != null ? issue.description : '';
-      this.setState({ issue });
+      this.setState({ issue, invalidFields: {} });
     } else {
-      this.setState({ issue: {} });
+      this.setState({ issue: {}, invalidFields: {} });
     }
   }
 
@@ -98,6 +108,17 @@ export default class IssueEdit extends React.Component {
       due,
       status,
     } = this.state.issue;
+
+    const { invalidFields } = this.state;
+    let validationMessage;
+
+    if (Object.keys(invalidFields).length !== 0) {
+      validationMessage = (
+        <div className="error">
+          Please correct invalid fields before submitting
+        </div>
+      );
+    }
 
     return (
       <form onSubmit={this.handleSubmit}>
@@ -147,10 +168,12 @@ export default class IssueEdit extends React.Component {
             <tr>
               <td>Due:</td>
               <td>
-                <input
+                <DateInput
                   name="due"
-                  value={due || ''}
+                  value={due}
                   onChange={this.onChange}
+                  onValidityChange={this.onValidityChange}
+                  key={id}
                 />
               </td>
             </tr>
@@ -185,6 +208,7 @@ export default class IssueEdit extends React.Component {
             </tr>
           </tbody>
         </table>
+        {validationMessage}
         <Link to={`/edit/${id - 1}`}>Prev</Link>
         {' | '}
         <Link to={`/edit/${id + 1}`}>Next</Link>
