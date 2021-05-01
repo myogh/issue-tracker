@@ -2,6 +2,7 @@ import React from 'react';
 import graphQLFetch from './graphQLFetch.js';
 import NumInput from './NumInput.jsx';
 import DateInput from './DateInput.jsx';
+import TextInput from './TextInput.jsx';
 import { Link } from 'react-router-dom';
 
 export default class IssueEdit extends React.Component {
@@ -70,15 +71,7 @@ export default class IssueEdit extends React.Component {
     const { id } = this.props.match.params;
     const data = await graphQLFetch(query, { id: Number(id) });
 
-    if (data.issue) {
-      const { issue } = data;
-      issue.created = issue.created ? issue.created.toDateString() : '';
-      issue.owner = issue.owner != null ? issue.owner : '';
-      issue.description = issue.description != null ? issue.description : '';
-      this.setState({ issue, invalidFields: {} });
-    } else {
-      this.setState({ issue: {}, invalidFields: {} });
-    }
+    this.setState({ issue: data ? data.issue : {}, invalidFields: {} });
   }
 
   render() {
@@ -109,7 +102,10 @@ export default class IssueEdit extends React.Component {
       status,
     } = this.state.issue;
 
+    const createdDate = created ? created.toDateString() : '';
+
     const { invalidFields } = this.state;
+
     let validationMessage;
 
     if (Object.keys(invalidFields).length !== 0) {
@@ -127,16 +123,12 @@ export default class IssueEdit extends React.Component {
           <tbody>
             <tr>
               <td>Created:</td>
-              <td>{created || ''}</td>
+              <td>{createdDate}</td>
             </tr>
             <tr>
               <td>Status:</td>
               <td>
-                <select
-                  name="status"
-                  value={status || ''}
-                  onChange={this.onChange}
-                >
+                <select name="status" value={status} onChange={this.onChange}>
                   <option value="New">New</option>
                   <option value="Assigned">Assigned</option>
                   <option value="Fixed">Fixed</option>
@@ -147,10 +139,11 @@ export default class IssueEdit extends React.Component {
             <tr>
               <td>Owner:</td>
               <td>
-                <input
+                <TextInput
                   name="owner"
-                  value={owner || ''}
+                  value={owner}
                   onChange={this.onChange}
+                  key={id}
                 />
               </td>
             </tr>
@@ -180,22 +173,24 @@ export default class IssueEdit extends React.Component {
             <tr>
               <td>Title:</td>
               <td>
-                <input
+                <TextInput
                   size={50}
                   name="title"
-                  value={title || ''}
+                  value={title}
                   onChange={this.onChange}
+                  key={id}
                 />
               </td>
             </tr>
             <tr>
               <td>Description:</td>
               <td>
-                <textarea
+                <TextInput
+                  tag="textarea"
                   rows={8}
                   cols={50}
                   name="description"
-                  value={description || ''}
+                  value={description}
                   onChange={this.onChange}
                 />
               </td>
