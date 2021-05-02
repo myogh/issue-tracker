@@ -3,7 +3,7 @@ import { Link, NavLink, withRouter } from 'react-router-dom';
 // -------- Issue Row Component ---------------
 
 const IssueRow = withRouter(
-  ({ issue, location: { search }, closeIssue, index }) => {
+  ({ issue, location: { search }, closeIssue, index, deleteIssue }) => {
     /**
      * Represents each row of issue in a IssueTable.
      * Props: issue from Table, and location from withRouter
@@ -27,6 +27,10 @@ const IssueRow = withRouter(
           <button type="button" onClick={() => closeIssue(index)}>
             Close
           </button>
+          {' | '}
+          <button type="button" onClick={() => deleteIssue(index)}>
+            Delete
+          </button>
         </td>
       </tr>
     );
@@ -35,7 +39,7 @@ const IssueRow = withRouter(
 
 // --------- Issue Table Component -----------------
 
-export default function IssueTable({ issues, closeIssue }) {
+export default function IssueTable({ issues, closeIssue, deleteIssue }) {
   /**
    * Displays a list of issues in a table.
    * Props: list of issue objects.
@@ -44,6 +48,7 @@ export default function IssueTable({ issues, closeIssue }) {
     <IssueRow
       key={issue.id}
       issue={issue}
+      deleteIssue={deleteIssue}
       closeIssue={closeIssue}
       index={index}
     />
