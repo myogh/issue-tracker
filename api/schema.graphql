@@ -8,15 +8,15 @@ enum StatusType {
 }
 
 type Issue {
-    _id: ID!
-    id: Int!
-    title: String!
-    status: StatusType!
-    owner: String!
-    effort: Int
-    created: GraphQLDate!
-    due: GraphQLDate
-    description: String
+  _id: ID!
+  id: Int!
+  title: String!
+  status: StatusType!
+  owner: String!
+  effort: Int
+  created: GraphQLDate!
+  due: GraphQLDate
+  description: String
 }
 
 "Toned down Issue, used as inputs, without server generated values."
@@ -24,7 +24,20 @@ input IssueInputs {
   title: String!
   "Optional, if not supplied, will be set to new"
   status: StatusType = New
-  owner: String 
+  owner: String
+  effort: Int
+  due: GraphQLDate
+  description: String
+}
+
+"""
+Inputs for issueUpdate: all are optional. Whichever is specified will
+be set to given value, undefined fields will remain unmodified
+"""
+input IssueUpdateInputs {
+  title: String
+  status: StatusType
+  owner: String
   effort: Int
   due: GraphQLDate
   description: String
@@ -33,12 +46,13 @@ input IssueInputs {
 # ----- Top Level Declarations -------------
 
 type Query {
-    about: String!
-    issueList(status: StatusType, effortMin: Int, effortMax: Int): [Issue!]
-    issue(id: Int!): Issue
+  about: String!
+  issueList(status: StatusType, effortMin: Int, effortMax: Int): [Issue!]
+  issue(id: Int!): Issue
 }
 
 type Mutation {
-    setAboutMessage(message: String!): String
-    issueAdd(issue: IssueInputs!): Issue!
+  setAboutMessage(message: String!): String
+  issueAdd(issue: IssueInputs!): Issue!
+  issueUpdate(id: Int!, changes: IssueUpdateInputs!): Issue!
 }

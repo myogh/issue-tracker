@@ -1,7 +1,8 @@
 const { UserInputError } = require('apollo-server-express');
 const { getDb, getNextSequence } = require('./db.js');
 
-// resolver func for isseList field
+// ----------- resolver func for isseList field ------------
+
 async function list(_, { status, effortMin, effortMax }) {
   const db = getDb();
 
@@ -18,14 +19,16 @@ async function list(_, { status, effortMin, effortMax }) {
   return issues;
 }
 
-// resolver func for issue field
+// ------- resolver func for issue field ------------------
+
 async function get(_, { id }) {
   const db = getDb();
   const issue = await db.collection('issues').findOne({ id });
   return issue;
 }
 
-// validating utility func for incoming post data
+// ----------- validating utility func for incoming post data -------
+
 function validate(issue) {
   const errors = [];
   if (issue.title.length < 3) {
@@ -39,7 +42,8 @@ function validate(issue) {
   }
 }
 
-// resolver func for issueAdd field
+// --------- resolver func for issueAdd field ----------------
+
 async function add(_, { issue }) {
   const db = getDb();
   validate(issue);
@@ -54,4 +58,20 @@ async function add(_, { issue }) {
   return savedIssue;
 }
 
-module.exports = { list, add, get };
+// ------------- resolver func for issueUpdate field --------
+
+async function update(_, { id, changes }) {
+  const db = getDb();
+  if (changes.title || changes.owner || changes.status) {
+    const issue = await db.collection('issues').findOne({ id });
+    Object.assign(issue, changes);
+    validate(issue);
+  }
+  await db.collection('issues').updateOne({ id }, { $set: changes });
+  const savedIssue = await db.collection('issues').findOne({ id });
+  return savedIssue;
+}
+
+module.exports = {
+  list, add, get, update,
+};
