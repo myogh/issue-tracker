@@ -2,7 +2,7 @@ import React from 'react';
 
 import 'url-search-params-polyfill';
 import { Route } from 'react-router-dom';
-import { Label } from 'react-bootstrap';
+import { Panel } from 'react-bootstrap';
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
 import IssueAdd from './IssueAdd.jsx';
@@ -149,16 +149,21 @@ export default class IssueList extends React.Component {
 
     return (
       <React.Fragment>
-        <IssueFilter />
+        <Panel>
+          <Panel.Heading>
+            <Panel.Title toggle>Filter</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body collapsible>
+            <IssueFilter />
+          </Panel.Body>
+        </Panel>
         <hr />
         <IssueTable
           issues={issues}
           closeIssue={this.closeIssue}
           deleteIssue={this.deleteIssue}
         />
-        <hr />
         <IssueAdd createIssue={this.createIssue} />
-        <hr />
         <Route path={`${match.path}/:id`} component={IssueDetail} />
       </React.Fragment>
     );

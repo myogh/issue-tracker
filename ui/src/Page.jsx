@@ -8,6 +8,7 @@ import {
   Glyphicon,
   Tooltip,
   OverlayTrigger,
+  Grid,
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import Contents from './Contents.jsx';
@@ -33,7 +34,7 @@ function NavBar() {
         <NavItem>
           <OverlayTrigger
             placement="left"
-            delayShow={1000}
+            delayShow={500}
             overlay={<Tooltip id="create-issue">Create Issue</Tooltip>}
           >
             <Glyphicon glyph="plus" />
@@ -54,6 +55,7 @@ function NavBar() {
 function Footer() {
   return (
     <small>
+      <hr />
       <p className="text-center">
         Full source code available at this{' '}
         <a href="https://github.com/aungmcs/issue-tracker">GitHub repository</a>
@@ -66,7 +68,9 @@ export default function Page() {
   return (
     <div>
       <NavBar />
-      <Contents />
+      <Grid fluid>
+        <Contents />
+      </Grid>
       <Footer />
     </div>
   );
