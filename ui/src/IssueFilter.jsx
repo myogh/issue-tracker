@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 
 import 'url-search-params-polyfill';
@@ -78,10 +79,8 @@ class IssueFilter extends React.Component {
           <option value="Assigned">Assigned</option>
           <option value="Fixed">Fixed</option>
           <option value="Closed">Closed</option>
-        </select>
-        {' '}
-        Effort between:
-        {' '}
+        </select>{' '}
+        Effort between:{' '}
         <input
           size={5}
           name="effortMin"
@@ -95,16 +94,17 @@ class IssueFilter extends React.Component {
           value={effortMax}
           onChange={this.onChangeEffortMax}
         />
-        <button type="button" onClick={this.applyFilter}>
+        <Button bsStyle="primary" type="button" onClick={this.applyFilter}>
           Apply
-        </button>
-        <button
+        </Button>
+        <Button
+          bsStyle="primary"
           type="button"
           onClick={this.showOriginalFilter}
           disabled={!changed}
         >
           Reset
-        </button>
+        </Button>
       </div>
     );
   }

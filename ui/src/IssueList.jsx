@@ -2,6 +2,7 @@ import React from 'react';
 
 import 'url-search-params-polyfill';
 import { Route } from 'react-router-dom';
+import { Label } from 'react-bootstrap';
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
 import IssueAdd from './IssueAdd.jsx';
@@ -148,8 +149,6 @@ export default class IssueList extends React.Component {
 
     return (
       <React.Fragment>
-        <h1>Issue Tracker</h1>
-        <hr />
         <IssueFilter />
         <hr />
         <IssueTable
