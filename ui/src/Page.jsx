@@ -31,13 +31,9 @@ function NavBar() {
       </Nav>
       <Nav pullRight>
         <IssueAddNavItem />
-        <NavDropdown
-          id="user-dropdown"
-          title={<Glyphicon glyph="optional-vertical" />}
-          noCaret
-        >
+        <LinkContainer to="/about">
           <MenuItem>About</MenuItem>
-        </NavDropdown>
+        </LinkContainer>
       </Nav>
     </Navbar>
   );

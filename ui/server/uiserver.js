@@ -1,10 +1,14 @@
-require('dotenv').config();
-const express = require('express');
-const path = require('path');
+import dotenv from 'dotenv';
+import express from 'express';
+import path from 'path';
+import render from './render.jsx';
+
+dotenv.config();
 
 const app = express();
 
-const UI_API_ENDPOINT = process.env.UI_API_ENDPOINT || 'http://localhost:3000/graphql';
+const UI_API_ENDPOINT =
+  process.env.UI_API_ENDPOINT || 'http://localhost:3000/graphql';
 
 const env = { UI_API_ENDPOINT };
 
@@ -21,7 +25,7 @@ if (enableHMR && process.env.NODE_ENV !== 'production') {
   const devMiddleware = require('webpack-dev-middleware');
   const hotMiddleware = require('webpack-hot-middleware');
 
-  const config = require('./webpack.config.js');
+  const config = require('../webpack.config.js')[0];
   config.entry.app.push('webpack-hot-middleware/client');
   config.plugins = config.plugins || [];
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -36,6 +40,8 @@ app.use(express.static('public'));
 app.get('/env.js', (_, res) => {
   res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
+
+app.get('/about', render);
 
 app.get('*', (_, res) => {
   res.sendFile(path.resolve('public/index.html'));
