@@ -19,21 +19,15 @@ function NavBar() {
         <Navbar.Brand>Issue Tracker</Navbar.Brand>
       </Navbar.Header>
       <Nav>
-        <LinkContainer exact to="/">
-          <NavItem>Home</NavItem>
-        </LinkContainer>
-        <LinkContainer exact to="/issues">
-          <NavItem>Issue List</NavItem>
-        </LinkContainer>
-        <LinkContainer exact to="/report">
-          <NavItem>Report</NavItem>
-        </LinkContainer>
+        <NavItem href="/">Home</NavItem>
+        <NavItem href="/issues">Issue List</NavItem>
+        <NavItem href="/report">Report</NavItem>
       </Nav>
       <Nav pullRight>
         <IssueAddNavItem />
-        <LinkContainer to="/about">
-          <MenuItem>About</MenuItem>
-        </LinkContainer>
+        <NavDropdown id="user-dropdown" title={<Glyphicon glyph="option-vertical" />} noCaret>
+          <MenuItem href="/about">About</MenuItem>
+        </NavDropdown>
       </Nav>
     </Navbar>
   );
