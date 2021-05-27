@@ -6,12 +6,6 @@
     "rules": {
         "import/extensions": "off",
         "react/prop-types": "off",
-        "object-curly-newline": ["error", {
-            "ObjectExpression": "always",
-            "ObjectPattern": { "multiline": true },
-            "ImportDeclaration": "never",
-            "ExportDeclaration": { "multiline": true, "minProperties": 3 }
-        }]
         "max-len": ["error", {"code": 80}],
     }
 }

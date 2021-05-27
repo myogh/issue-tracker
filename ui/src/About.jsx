@@ -11,19 +11,29 @@ export default class About extends React.Component {
   constructor(props) {
     super(props);
     const apiAbout = store.initialData ? store.initialData.about : null;
-    this.state = { apiAbout };
+    delete store.initialData;
+
+    this.state = {
+      apiAbout,
+    };
   }
 
   async componentDidMount() {
-    const { apiAbout } = this.state;
+    const {
+      apiAbout,
+    } = this.state;
     if (apiAbout == null) {
       const data = await About.fetchData();
-      this.setState({ apiAbout: data.about });
+      this.setState({
+        apiAbout: data.about,
+      });
     }
   }
 
   render() {
-    const { apiAbout } = this.state;
+    const {
+      apiAbout,
+    } = this.state;
     return (
       <div className="text-center">
         <h3>Issue Tracker Version 0.9</h3>

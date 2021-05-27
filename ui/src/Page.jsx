@@ -8,7 +8,7 @@ import {
   Glyphicon,
   Grid,
 } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+// import { LinkContainer } from 'react-router-bootstrap';
 import Contents from './Contents.jsx';
 import IssueAddNavItem from './IssueAddNavItem.jsx';
 
@@ -25,7 +25,11 @@ function NavBar() {
       </Nav>
       <Nav pullRight>
         <IssueAddNavItem />
-        <NavDropdown id="user-dropdown" title={<Glyphicon glyph="option-vertical" />} noCaret>
+        <NavDropdown
+          id="user-dropdown"
+          title={<Glyphicon glyph="option-vertical" />}
+          noCaret
+        >
           <MenuItem href="/about">About</MenuItem>
         </NavDropdown>
       </Nav>
@@ -35,10 +39,11 @@ function NavBar() {
 
 function Footer() {
   return (
-    <small>
+    <small className="footer">
       <hr />
       <p className="text-center">
-        Full source code available at this{' '}
+        Full source code available at this
+        {' '}
         <a href="https://github.com/aungmcs/issue-tracker">GitHub repository</a>
       </p>
     </small>

@@ -11,7 +11,9 @@ import { withRouter } from 'react-router-dom';
 // -------- Issue Row Component ---------------
 
 const IssueRow = withRouter(
-  ({ issue, location: { search }, closeIssue, index, deleteIssue }) => {
+  ({
+    issue, location: { search }, closeIssue, index, deleteIssue,
+  }) => {
     /**
      * Represents each row of issue in a IssueTable.
      * Props: issue from Table, and location from withRouter
@@ -72,7 +74,7 @@ const IssueRow = withRouter(
     );
 
     return <LinkContainer to={selectLocation}>{tableRow}</LinkContainer>;
-  }
+  },
 );
 
 // --------- Issue Table Component -----------------

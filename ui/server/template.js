@@ -1,3 +1,5 @@
+import serialize from 'serialize-javascript';
+
 export default function template(body, data) {
   return `<!DOCTYPE HTML>
 <html>
@@ -9,12 +11,13 @@ export default function template(body, data) {
 <style>
 table.table-hover tr {cursor: pointer;}
 .panel-title a {display: block; width: 100%; cursor: pointer;}
+.footer {position: absolute; bottom: 0px; width: 100%;}
 </style>
 </head>
 <body>
 <!-- Page generated from template. -->
 <div id="contents">${body}</div>
-<script>window.__INITIAL_DATA__ = ${JSON.stringify(data)}</script>
+<script>window.__INITIAL_DATA__ = ${serialize(data)}</script>
 <script src="/env.js"></script>
 <script src="/vendor.bundle.js"></script>
 <script src="/app.bundle.js"></script>

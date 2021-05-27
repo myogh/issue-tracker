@@ -1,11 +1,6 @@
 import React from 'react';
-import graphQLFetch from './graphQLFetch.js';
-import NumInput from './NumInput.jsx';
-import DateInput from './DateInput.jsx';
-import TextInput from './TextInput.jsx';
 import { Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
-import Toast from './Toast.jsx';
 import {
   Col,
   Panel,
@@ -17,12 +12,38 @@ import {
   Button,
   Alert,
 } from 'react-bootstrap';
+import graphQLFetch from './graphQLFetch.js';
+import NumInput from './NumInput.jsx';
+import DateInput from './DateInput.jsx';
+import TextInput from './TextInput.jsx';
+import Toast from './Toast.jsx';
+import store from './store.js';
 
 export default class IssueEdit extends React.Component {
+  static async fetchData(match, _, showError) {
+    const query = `query issue($id: Int!){
+            issue(id: $id){
+                id title status owner
+                effort created due description
+            }
+        }`;
+
+    const {
+      params: { id },
+    } = match;
+
+    const result = await graphQLFetch(query, { id: Number(id) }, showError);
+    return result;
+  }
+
   constructor(props) {
     super(props);
+
+    const issue = store.initialData ? store.initialData.issue : null;
+    delete store.initialData;
+
     this.state = {
-      issue: {},
+      issue,
       invalidFields: {},
       showingValidation: false,
       toastVisible: false,
@@ -38,7 +59,10 @@ export default class IssueEdit extends React.Component {
   }
 
   componentDidMount() {
-    this.loadData();
+    const { issue } = this.state;
+    if (issue == null) {
+      this.loadData();
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -72,7 +96,7 @@ export default class IssueEdit extends React.Component {
     const { name, value: textValue } = e.target;
     const value = naturalValue === undefined ? textValue : naturalValue;
 
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       issue: { ...prevState.issue, [name]: value },
     }));
   }
@@ -85,7 +109,8 @@ export default class IssueEdit extends React.Component {
     // check validity of inputs before updating
     if (Object.keys(invalidFields).length !== 0) return;
 
-    const query = `mutation issueUpdate($id: Int!, $changes: IssueUpdateInputs!){
+    const query = `mutation issueUpdate($id: Int!,
+                        $changes: IssueUpdateInputs!){
                         issueUpdate(id: $id, changes: $changes){
                             id title status owner
                             effort created due description
@@ -101,16 +126,8 @@ export default class IssueEdit extends React.Component {
   }
 
   async loadData() {
-    const query = `query issue($id: Int!) {
-            issue(id: $id) {
-                id title status owner
-                effort created due description
-            }
-        }`;
-
-    const { id } = this.props.match.params;
-    const data = await graphQLFetch(query, { id: Number(id) }, this.showError);
-
+    const { match } = this.props;
+    const data = await IssueEdit.fetchData(match, null, this.showError);
     this.setState({ issue: data ? data.issue : {}, invalidFields: {} });
   }
 
@@ -143,6 +160,9 @@ export default class IssueEdit extends React.Component {
   }
 
   render() {
+    const { issue } = this.state;
+    if (issue == null) return null;
+
     const {
       issue: { id },
     } = this.state;
@@ -161,16 +181,6 @@ export default class IssueEdit extends React.Component {
     }
 
     const { toastVisible, toastMessage, toastType } = this.state;
-
-    const {
-      created,
-      title,
-      owner,
-      effort,
-      description,
-      due,
-      status,
-    } = this.state.issue;
 
     const { invalidFields, showingValidation } = this.state;
 
@@ -197,7 +207,7 @@ export default class IssueEdit extends React.Component {
               </Col>
               <Col sm={9}>
                 <FormControl.Static>
-                  {created.toDateString()}
+                  {issue.created.toDateString()}
                 </FormControl.Static>
               </Col>
             </FormGroup>
@@ -209,7 +219,7 @@ export default class IssueEdit extends React.Component {
                 <FormControl
                   componentClass="select"
                   name="status"
-                  value={status}
+                  value={issue.status}
                   onChange={this.onChange}
                 >
                   <option value="New">New</option>
@@ -227,7 +237,7 @@ export default class IssueEdit extends React.Component {
                 <FormControl
                   componentClass={TextInput}
                   name="owner"
-                  value={owner}
+                  value={issue.owner}
                   onChange={this.onChange}
                   key={id}
                 />
@@ -241,7 +251,7 @@ export default class IssueEdit extends React.Component {
                 <FormControl
                   componentClass={NumInput}
                   name="effort"
-                  value={effort}
+                  value={issue.effort}
                   onChange={this.onChange}
                   key={id}
                 />
@@ -256,7 +266,7 @@ export default class IssueEdit extends React.Component {
                   componentClass={DateInput}
                   onValidityChange={this.onValidityChange}
                   name="due"
-                  value={due}
+                  value={issue.due}
                   onChange={this.onChange}
                   key={id}
                 />
@@ -272,7 +282,7 @@ export default class IssueEdit extends React.Component {
                   componentClass={TextInput}
                   size={50}
                   name="title"
-                  value={title}
+                  value={issue.title}
                   onChange={this.onChange}
                   key={id}
                 />
@@ -289,7 +299,7 @@ export default class IssueEdit extends React.Component {
                   rows={4}
                   cols={50}
                   name="description"
-                  value={description}
+                  value={issue.description}
                   onChange={this.onChange}
                   key={id}
                 />
