@@ -1,7 +1,6 @@
 import React from 'react';
 
 import 'url-search-params-polyfill';
-import { Route } from 'react-router-dom';
 import { Panel } from 'react-bootstrap';
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
@@ -11,9 +10,21 @@ import Toast from './Toast.jsx';
 import store from './store.js';
 
 export default class IssueList extends React.Component {
-  static async fetchData(_, search, showError) {
+  static async fetchData(match, search, showError) {
     const params = new URLSearchParams(search);
-    const vars = {};
+    const vars = { hasSelection: false, selectedId: 0 };
+
+    const {
+      params: { id },
+    } = match;
+
+    const idInt = parseInt(id, 10);
+
+    if (!Number.isNaN(idInt)) {
+      vars.hasSelection = true;
+      vars.selectedId = idInt;
+    }
+
     if (params.get('status')) vars.status = params.get('status');
 
     const effortMin = parseInt(params.get('effortMin'), 10);
@@ -25,7 +36,9 @@ export default class IssueList extends React.Component {
     const query = `query issueList(
                      $status: StatusType,
                      $effortMin: Int,
-                     $effortMax: Int
+                     $effortMax: Int,
+                     $hasSelection: Boolean!,
+                     $selectedId: Int!
                      ){
                       issueList(
                         status: $status,
@@ -36,6 +49,9 @@ export default class IssueList extends React.Component {
                          status owner
                          created effort due
                          }
+                      issue(id: $selectedId) @include (if: $hasSelection){
+                        id description
+                      }
                     }`;
 
     const data = await graphQLFetch(query, vars, showError);
@@ -45,9 +61,11 @@ export default class IssueList extends React.Component {
   constructor(props) {
     super(props);
     const issues = store.initialData ? store.initialData.issues : null;
+    const selectedIssue = store.initialData ? store.initialData.issue : null;
     delete store.initialData;
     this.state = {
       issues,
+      selectedIssue,
       toastVisible: false,
       toastMessage: '',
       toastType: 'info',
@@ -68,13 +86,19 @@ export default class IssueList extends React.Component {
     // to update state on url change for filtering
     const {
       location: { prevSearch },
+      match: {
+        params: { id: prevId },
+      },
     } = prevProps;
 
     const {
       location: { search },
+      match: {
+        params: { id },
+      },
     } = this.props;
 
-    if (prevSearch !== search) {
+    if (prevSearch !== search || prevId !== id) {
       this.loadData();
     }
   }
@@ -144,12 +168,13 @@ export default class IssueList extends React.Component {
      */
     const {
       location: { search },
+      match,
     } = this.props;
 
-    const data = await IssueList.fetchData(null, search, this.showError);
+    const data = await IssueList.fetchData(match, search, this.showError);
 
     if (data) {
-      this.setState({ issues: data.issueList });
+      this.setState({ issues: data.issueList, selectedIssue: data.issue });
     }
   }
 
@@ -174,10 +199,9 @@ export default class IssueList extends React.Component {
   }
 
   render() {
-    const { issues } = this.state;
+    const { issues, selectedIssue } = this.state;
     if (issues == null) return null;
 
-    const { match } = this.props;
     const { toastVisible, toastType, toastMessage } = this.state;
 
     return (
@@ -196,7 +220,7 @@ export default class IssueList extends React.Component {
           closeIssue={this.closeIssue}
           deleteIssue={this.deleteIssue}
         />
-        <Route path={`${match.path}/:id`} component={IssueDetail} />
+        <IssueDetail issue={selectedIssue} />
         <Toast
           showing={toastVisible}
           onDismiss={this.dismissToast}
