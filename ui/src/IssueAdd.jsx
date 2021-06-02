@@ -32,7 +32,7 @@ export default class IssueAdd extends React.Component {
       owner: form.owner.value,
       title: form.title.value,
       due: new Date(
-        new Date().getTime() + 1000 * 60 * 60 * 24 * 10
+        new Date().getTime() + 1000 * 60 * 60 * 24 * 10,
       ).toISOString(),
     };
 
@@ -46,13 +46,17 @@ export default class IssueAdd extends React.Component {
     return (
       <Form inline name="issueAdd" onSubmit={this.handleSubmit}>
         <FormGroup>
-          <ControlLabel>Owner:</ControlLabel>{' '}
+          <ControlLabel>Owner:</ControlLabel>
+          {' '}
           <FormControl type="text" name="owner" />
-        </FormGroup>{' '}
+        </FormGroup>
+        {' '}
         <FormGroup>
-          <ControlLabel>Title:</ControlLabel>{' '}
+          <ControlLabel>Title:</ControlLabel>
+          {' '}
           <FormControl type="text" name="title" />
-        </FormGroup>{' '}
+        </FormGroup>
+        {' '}
         <Button bsStyle="primary" type="submit">
           Add
         </Button>

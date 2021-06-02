@@ -5,6 +5,7 @@ import { StaticRouter, matchPath } from 'react-router-dom';
 import template from './template.js';
 import Page from '../src/Page.jsx';
 import routes from '../src/routes.js';
+import store from '../src/store.js';
 
 async function render(req, res) {
   const activeRoute = routes.find((route) => matchPath(req.path, route));
@@ -19,6 +20,7 @@ async function render(req, res) {
 
   const context = {};
 
+  store.initialData = initialData;
   const element = (
     <StaticRouter location={req.url} context={context}>
       <Page />

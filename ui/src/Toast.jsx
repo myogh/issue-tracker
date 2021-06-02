@@ -8,12 +8,16 @@ export default class Toast extends React.Component {
       this.dismissTimer = setTimeout(onDismiss, 3000);
     }
   }
+
   componentWillUnmount() {
     clearTimeout(this.dismissTimer);
   }
 
   render() {
-    const { showing, bsStyle, onDismiss, children } = this.props;
+    const {
+      showing, bsStyle, onDismiss, children,
+    } = this.props;
+
     return (
       <Collapse in={showing}>
         <div style={{ position: 'fixed', bottom: 20, left: 20 }}>
