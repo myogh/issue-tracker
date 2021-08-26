@@ -718,7 +718,7 @@ function IssueDetail({
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ IssueEdit)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -732,8 +732,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _NumInput_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./NumInput.jsx */ "./src/NumInput.jsx");
 /* harmony import */ var _DateInput_jsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./DateInput.jsx */ "./src/DateInput.jsx");
 /* harmony import */ var _TextInput_jsx__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./TextInput.jsx */ "./src/TextInput.jsx");
-/* harmony import */ var _Toast_jsx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Toast.jsx */ "./src/Toast.jsx");
-/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
+/* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
+
 
 
 
@@ -765,22 +766,16 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
 
   constructor(props) {
     super(props);
-    const issue = _store_js__WEBPACK_IMPORTED_MODULE_9__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_9__.default.initialData.issue : null;
-    delete _store_js__WEBPACK_IMPORTED_MODULE_9__.default.initialData;
+    const issue = _store_js__WEBPACK_IMPORTED_MODULE_8__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_8__.default.initialData.issue : null;
+    delete _store_js__WEBPACK_IMPORTED_MODULE_8__.default.initialData;
     this.state = {
       issue,
       invalidFields: {},
-      showingValidation: false,
-      toastVisible: false,
-      toastMessage: '',
-      toastType: 'success'
+      showingValidation: false
     };
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onValidityChange = this.onValidityChange.bind(this);
-    this.showSuccess = this.showSuccess.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
   }
 
   componentDidMount() {
@@ -863,24 +858,29 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       created,
       ...changes
     } = issue;
+    const {
+      showError,
+      showSuccess
+    } = this.props;
     const data = await (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_4__.default)(query, {
       id,
       changes
-    }, this.showError);
+    }, showError);
 
     if (data) {
       this.setState({
         issue: data.issueUpdate
       });
-      this.showSuccess('Updated issue successfully');
+      showSuccess('Updated issue successfully');
     }
   }
 
   async loadData() {
     const {
-      match
+      match,
+      showError
     } = this.props;
-    const data = await IssueEdit.fetchData(match, null, this.showError);
+    const data = await IssueEdit.fetchData(match, null, showError);
     this.setState({
       issue: data ? data.issue : {},
       invalidFields: {}
@@ -896,28 +896,6 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
   dismissValidation() {
     this.setState({
       showingValidation: false
-    });
-  }
-
-  showSuccess(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'success'
-    });
-  }
-
-  showError(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'danger'
-    });
-  }
-
-  dismissToast() {
-    this.setState({
-      toastVisible: false
     });
   }
 
@@ -947,11 +925,6 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       return null;
     }
 
-    const {
-      toastVisible,
-      toastMessage,
-      toastType
-    } = this.state;
     const {
       invalidFields,
       showingValidation
@@ -1070,14 +1043,14 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       to: `/edit/${id - 1}`
     }, "Prev"), ' | ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
       to: `/edit/${id + 1}`
-    }, "Next")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Toast_jsx__WEBPACK_IMPORTED_MODULE_8__.default, {
-      showing: toastVisible,
-      onDismiss: this.dismissToast,
-      bsStyle: toastType
-    }, toastMessage));
+    }, "Next")));
   }
 
 }
+
+const IssueEditWithToast = (0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_9__.default)(IssueEdit);
+IssueEditWithToast.fetchData = IssueEdit.fetchData;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IssueEditWithToast);
 
 /***/ }),
 
@@ -2479,7 +2452,7 @@ module.exports = require("webpack-node-externals");
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("163805403bec3278ca17")
+/******/ 		__webpack_require__.h = () => ("2bca4dd2cc9729705815")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
