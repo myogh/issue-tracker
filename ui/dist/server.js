@@ -1261,7 +1261,7 @@ class IssueFilter extends (react__WEBPACK_IMPORTED_MODULE_0___default().Componen
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ IssueList)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -1273,8 +1273,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _IssueTable_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./IssueTable.jsx */ "./src/IssueTable.jsx");
 /* harmony import */ var _IssueDetail_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./IssueDetail.jsx */ "./src/IssueDetail.jsx");
 /* harmony import */ var _graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./graphQLFetch.js */ "./src/graphQLFetch.js");
-/* harmony import */ var _Toast_jsx__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Toast.jsx */ "./src/Toast.jsx");
-/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
+/* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
+
 
 
 
@@ -1334,21 +1335,15 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
 
   constructor(props) {
     super(props);
-    const issues = _store_js__WEBPACK_IMPORTED_MODULE_8__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_8__.default.initialData.issues : null;
-    const selectedIssue = _store_js__WEBPACK_IMPORTED_MODULE_8__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_8__.default.initialData.issue : null;
-    delete _store_js__WEBPACK_IMPORTED_MODULE_8__.default.initialData;
+    const issues = _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData.issues : null;
+    const selectedIssue = _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData.issue : null;
+    delete _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData;
     this.state = {
       issues,
-      selectedIssue,
-      toastVisible: false,
-      toastMessage: '',
-      toastType: 'info'
+      selectedIssue
     };
     this.closeIssue = this.closeIssue.bind(this);
     this.deleteIssue = this.deleteIssue.bind(this);
-    this.showSuccess = this.showSuccess.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
   }
 
   componentDidMount() {
@@ -1400,9 +1395,12 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
                             effort created due description
                         }
                    }`;
+    const {
+      showError
+    } = this.props;
     const data = await (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__.default)(query, {
       id: issues[index].id
-    }, this.showError);
+    }, showError);
 
     if (data) {
       this.setState(prevState => {
@@ -1412,7 +1410,10 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
           issues: newList
         };
       });
-      this.showSuccess('Successfully closed the issue');
+      const {
+        showSuccess
+      } = this.props;
+      showSuccess('Successfully closed the issue');
     }
   }
 
@@ -1433,9 +1434,12 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     const {
       id
     } = issues[index];
+    const {
+      showError
+    } = this.props;
     const data = await (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__.default)(query, {
       id: Number(id)
-    }, this.showError);
+    }, showError);
 
     if (data && data.issueDelete) {
       this.setState(prevState => {
@@ -1453,7 +1457,10 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
           issues: newList
         };
       });
-      this.showSuccess(`Deleted issue ${id} successfully.`);
+      const {
+        showSuccess
+      } = this.props;
+      showSuccess(`Deleted issue ${id} successfully.`);
     } else {
       this.loadData();
     }
@@ -1470,7 +1477,10 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       },
       match
     } = this.props;
-    const data = await IssueList.fetchData(match, search, this.showError);
+    const {
+      showError
+    } = this.props;
+    const data = await IssueList.fetchData(match, search, showError);
 
     if (data) {
       this.setState({
@@ -1480,39 +1490,12 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     }
   }
 
-  showSuccess(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'success'
-    });
-  }
-
-  showError(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'danger'
-    });
-  }
-
-  dismissToast() {
-    this.setState({
-      toastVisible: false
-    });
-  }
-
   render() {
     const {
       issues,
       selectedIssue
     } = this.state;
     if (issues == null) return null;
-    const {
-      toastVisible,
-      toastType,
-      toastMessage
-    } = this.state;
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Panel, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Panel.Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Panel.Title, {
       toggle: true
     }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Panel.Body, {
@@ -1523,14 +1506,14 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       deleteIssue: this.deleteIssue
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_IssueDetail_jsx__WEBPACK_IMPORTED_MODULE_5__.default, {
       issue: selectedIssue
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Toast_jsx__WEBPACK_IMPORTED_MODULE_7__.default, {
-      showing: toastVisible,
-      onDismiss: this.dismissToast,
-      bsStyle: toastType
-    }, toastMessage));
+    }));
   }
 
 }
+
+const IssueListWithToast = (0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_8__.default)(IssueList);
+IssueListWithToast.fetchData = IssueList.fetchData;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IssueListWithToast);
 
 /***/ }),
 
@@ -2082,6 +2065,81 @@ const store = {};
 
 /***/ }),
 
+/***/ "./src/withToast.jsx":
+/*!***************************!*\
+  !*** ./src/withToast.jsx ***!
+  \***************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ withToast)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Toast_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Toast.jsx */ "./src/Toast.jsx");
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+
+
+function withToast(OriginalComponent) {
+  return class ToastWrapper extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
+    constructor(props) {
+      super(props);
+      this.state = {
+        toastVisible: false,
+        toastMessage: '',
+        toastType: 'success'
+      };
+      this.showError = this.showError.bind(this);
+      this.showSuccess = this.showSuccess.bind(this);
+      this.dismissToast = this.dismissToast.bind(this);
+    }
+
+    showSuccess(message) {
+      this.setState({
+        toastVisible: true,
+        toastMessage: message,
+        toastType: 'success'
+      });
+    }
+
+    showError(message) {
+      this.setState({
+        toastVisible: true,
+        toastMessage: message,
+        toastType: 'danger'
+      });
+    }
+
+    dismissToast() {
+      this.setState({
+        toastVisible: false
+      });
+    }
+
+    render() {
+      const {
+        toastType,
+        toastMessage,
+        toastVisible
+      } = this.state;
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(OriginalComponent, _extends({
+        showError: this.showError,
+        showSuccess: this.showSuccess
+      }, this.props)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Toast_jsx__WEBPACK_IMPORTED_MODULE_1__.default, {
+        bsStyle: toastType,
+        showing: toastVisible,
+        onDismiss: this.dismissToast
+      }, toastMessage));
+    }
+
+  };
+}
+
+/***/ }),
+
 /***/ "./webpack.config.js":
 /*!***************************!*\
   !*** ./webpack.config.js ***!
@@ -2421,7 +2479,7 @@ module.exports = require("webpack-node-externals");
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("b0b59f5037d211946788")
+/******/ 		__webpack_require__.h = () => ("163805403bec3278ca17")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */

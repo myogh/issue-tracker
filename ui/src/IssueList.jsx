@@ -6,10 +6,10 @@ import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
 import IssueDetail from './IssueDetail.jsx';
 import graphQLFetch from './graphQLFetch.js';
-import Toast from './Toast.jsx';
 import store from './store.js';
+import withToast from './withToast.jsx';
 
-export default class IssueList extends React.Component {
+class IssueList extends React.Component {
   static async fetchData(match, search, showError) {
     const params = new URLSearchParams(search);
     const vars = { hasSelection: false, selectedId: 0 };
@@ -66,15 +66,9 @@ export default class IssueList extends React.Component {
     this.state = {
       issues,
       selectedIssue,
-      toastVisible: false,
-      toastMessage: '',
-      toastType: 'info',
     };
     this.closeIssue = this.closeIssue.bind(this);
     this.deleteIssue = this.deleteIssue.bind(this);
-    this.showSuccess = this.showSuccess.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
   }
 
   componentDidMount() {
@@ -116,18 +110,16 @@ export default class IssueList extends React.Component {
                         }
                    }`;
 
-    const data = await graphQLFetch(
-      query,
-      { id: issues[index].id },
-      this.showError,
-    );
+    const { showError } = this.props;
+    const data = await graphQLFetch(query, { id: issues[index].id }, showError);
     if (data) {
       this.setState((prevState) => {
         const newList = [...prevState.issues];
         newList[index] = data.issueUpdate;
         return { issues: newList };
       });
-      this.showSuccess('Successfully closed the issue');
+      const { showSuccess } = this.props;
+      showSuccess('Successfully closed the issue');
     }
   }
 
@@ -137,13 +129,16 @@ export default class IssueList extends React.Component {
                     }`;
 
     const { issues } = this.state;
+
     const {
       location: { pathname, search },
       history,
     } = this.props;
+
     const { id } = issues[index];
 
-    const data = await graphQLFetch(query, { id: Number(id) }, this.showError);
+    const { showError } = this.props;
+    const data = await graphQLFetch(query, { id: Number(id) }, showError);
 
     if (data && data.issueDelete) {
       this.setState((prevState) => {
@@ -155,7 +150,9 @@ export default class IssueList extends React.Component {
         newList.splice(index, 1);
         return { issues: newList };
       });
-      this.showSuccess(`Deleted issue ${id} successfully.`);
+
+      const { showSuccess } = this.props;
+      showSuccess(`Deleted issue ${id} successfully.`);
     } else {
       this.loadData();
     }
@@ -171,38 +168,17 @@ export default class IssueList extends React.Component {
       match,
     } = this.props;
 
-    const data = await IssueList.fetchData(match, search, this.showError);
+    const { showError } = this.props;
+    const data = await IssueList.fetchData(match, search, showError);
 
     if (data) {
       this.setState({ issues: data.issueList, selectedIssue: data.issue });
     }
   }
 
-  showSuccess(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'success',
-    });
-  }
-
-  showError(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'danger',
-    });
-  }
-
-  dismissToast() {
-    this.setState({ toastVisible: false });
-  }
-
   render() {
     const { issues, selectedIssue } = this.state;
     if (issues == null) return null;
-
-    const { toastVisible, toastType, toastMessage } = this.state;
 
     return (
       <React.Fragment>
@@ -221,14 +197,12 @@ export default class IssueList extends React.Component {
           deleteIssue={this.deleteIssue}
         />
         <IssueDetail issue={selectedIssue} />
-        <Toast
-          showing={toastVisible}
-          onDismiss={this.dismissToast}
-          bsStyle={toastType}
-        >
-          {toastMessage}
-        </Toast>
       </React.Fragment>
     );
   }
 }
+
+const IssueListWithToast = withToast(IssueList);
+IssueListWithToast.fetchData = IssueList.fetchData;
+
+export default IssueListWithToast;
