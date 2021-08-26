@@ -293,7 +293,7 @@ if (!process.env.UI_SERVER_API_ENDPOINT) {
 }
 
 const port = process.env.UI_SERVER_PORT || 8000;
-const enableHMR = (process.env.ENABLE_HMR || 'true') === 'true';
+const enableHMR = process.env.ENABLE_HMR === 'true';
 
 if (enableHMR && "development" !== 'production') {
   console.log('Adding dev middleware, enabling HMR');
@@ -556,7 +556,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
 /* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _graphQLFetch_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./graphQLFetch.js */ "./src/graphQLFetch.js");
-/* harmony import */ var _Toast_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Toast.jsx */ "./src/Toast.jsx");
+/* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
 
 
 
@@ -567,16 +567,11 @@ class IssueAddNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Comp
   constructor(props) {
     super(props);
     this.state = {
-      showing: false,
-      toastVisible: false,
-      toastMessage: '',
-      toastType: 'success'
+      showing: false
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
   }
 
   showModal() {
@@ -588,20 +583,6 @@ class IssueAddNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Comp
   hideModal() {
     this.setState({
       showing: false
-    });
-  }
-
-  showError(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'danger'
-    });
-  }
-
-  dismissToast() {
-    this.setState({
-      toastVisible: false
     });
   }
 
@@ -619,9 +600,12 @@ class IssueAddNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Comp
         id
        }
     }`;
+    const {
+      showError
+    } = this.props;
     const data = await (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_3__.default)(query, {
       issue
-    }, this.showError);
+    }, showError);
 
     if (data) {
       const {
@@ -634,11 +618,6 @@ class IssueAddNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Comp
   render() {
     const {
       showing
-    } = this.state;
-    const {
-      toastVisible,
-      toastMessage,
-      toastType
     } = this.state;
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.NavItem, {
       onClick: this.showModal
@@ -670,16 +649,12 @@ class IssueAddNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Comp
     }, "Submit"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Button, {
       bsStyle: "link",
       onClick: this.hideModal
-    }, "Cancel")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Toast_jsx__WEBPACK_IMPORTED_MODULE_4__.default, {
-      showing: toastVisible,
-      onDismiss: this.dismissToast,
-      bsStyle: toastType
-    }, toastMessage));
+    }, "Cancel")))));
   }
 
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.withRouter)(IssueAddNavItem));
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_4__.default)((0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.withRouter)(IssueAddNavItem)));
 
 /***/ }),
 
@@ -2452,7 +2427,7 @@ module.exports = require("webpack-node-externals");
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("2bca4dd2cc9729705815")
+/******/ 		__webpack_require__.h = () => ("d885bb49fe8eeb554d5d")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */

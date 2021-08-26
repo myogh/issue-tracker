@@ -16,7 +16,7 @@ if (!process.env.UI_SERVER_API_ENDPOINT) {
 
 const port = process.env.UI_SERVER_PORT || 8000;
 
-const enableHMR = (process.env.ENABLE_HMR || 'true') === 'true';
+const enableHMR = process.env.ENABLE_HMR === 'true';
 
 if (enableHMR && process.env.NODE_ENV !== 'production') {
   console.log('Adding dev middleware, enabling HMR');
