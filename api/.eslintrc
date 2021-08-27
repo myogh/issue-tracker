@@ -1,9 +1,9 @@
 {
     "extends": "airbnb-base",
     "env": {
-        "node": "true"
+        "node": true
     },
-    rules: {
+    "rules": {
         "no-console": "off",
         "max-len": ["error", {"code": 80}]
     }
