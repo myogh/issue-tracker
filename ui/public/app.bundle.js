@@ -1274,7 +1274,7 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
     _classCallCheck(this, IssueList);
 
     _this = _super.call(this, props);
-    var issues = _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData.issueList : null;
+    var issues = _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData.issueList.issues : null;
     var selectedIssue = _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData.issue : null;
     delete _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData;
     _this.state = {
@@ -1442,7 +1442,7 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
 
                 if (data) {
                   this.setState({
-                    issues: data.issueList,
+                    issues: data.issueList.issues,
                     selectedIssue: data.issue
                   });
                 }
@@ -1509,7 +1509,7 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
                 if (!Number.isNaN(effortMin)) vars.effortMin = effortMin;
                 effortMax = parseInt(params.get('effortMax'), 10);
                 if (!Number.isNaN(effortMax)) vars.effortMax = effortMax;
-                query = "query issueList(\n                     $status: StatusType,\n                     $effortMin: Int,\n                     $effortMax: Int,\n                     $hasSelection: Boolean!,\n                     $selectedId: Int!\n                     ){\n                      issueList(\n                        status: $status,\n                        effortMin: $effortMin,\n                        effortMax: $effortMax\n                        ){\n                         id title\n                         status owner\n                         created effort due\n                         }\n                      issue(id: $selectedId) @include (if: $hasSelection){\n                        id description\n                      }\n                    }";
+                query = "query issueList(\n                     $status: StatusType,\n                     $effortMin: Int,\n                     $effortMax: Int,\n                     $hasSelection: Boolean!,\n                     $selectedId: Int!\n                     ){\n                      issueList(\n                        status: $status,\n                        effortMin: $effortMin,\n                        effortMax: $effortMax\n                        ){\n                          issues {\n                            id title\n                            status owner\n                            created effort due\n                          }\n                         }\n                      issue(id: $selectedId) @include (if: $hasSelection){\n                        id description\n                      }\n                    }";
                 _context4.next = 13;
                 return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_5__.default)(query, vars, showError);
 

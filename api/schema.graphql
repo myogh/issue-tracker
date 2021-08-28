@@ -43,6 +43,7 @@ input IssueUpdateInputs {
   description: String
 }
 
+"Type to show issue stats grouped by owners and Statuses"
 type IssueCounts {
   owner: String! 
   New: Int
@@ -50,11 +51,22 @@ type IssueCounts {
   Fixed: Int
   Closed: Int
 }
+
+"Type returned by issueList"
+type IssueListWithPages {
+  issues: [Issue!]!
+  pages: Int
+}
 # ----- Top Level Declarations -------------
 
 type Query {
   about: String!
-  issueList(status: StatusType, effortMin: Int, effortMax: Int): [Issue!]
+  issueList(
+    status: StatusType, 
+    effortMin: Int, 
+    effortMax: Int
+    page: Int = 1
+    ): IssueListWithPages 
   issue(id: Int!): Issue
   issueCounts(
     status: StatusType

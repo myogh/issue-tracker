@@ -1034,9 +1034,11 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
                         effortMin: $effortMin,
                         effortMax: $effortMax
                         ){
-                         id title
-                         status owner
-                         created effort due
+                          issues {
+                            id title
+                            status owner
+                            created effort due
+                          }
                          }
                       issue(id: $selectedId) @include (if: $hasSelection){
                         id description
@@ -1048,7 +1050,7 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
 
   constructor(props) {
     super(props);
-    const issues = _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData.issueList : null;
+    const issues = _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData.issueList.issues : null;
     const selectedIssue = _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData.issue : null;
     delete _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData;
     this.state = {
@@ -1197,7 +1199,7 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
 
     if (data) {
       this.setState({
-        issues: data.issueList,
+        issues: data.issueList.issues,
         selectedIssue: data.issue
       });
     }

@@ -1,9 +1,11 @@
 const { UserInputError } = require('apollo-server-express');
 const { getDb, getNextSequence } = require('./db.js');
 
+const PAGE_SIZE = 10;
 // ----------- resolver func for isseList field ------------
 
-async function list(_, { status, effortMin, effortMax }) {
+// eslint-disable-next-line
+async function list(_, { status, effortMin, effortMax, page }) {
   const db = getDb();
 
   const filter = {};
@@ -15,8 +17,17 @@ async function list(_, { status, effortMin, effortMax }) {
     if (effortMax !== undefined) filter.effort.$lte = effortMax;
   }
 
-  const issues = await db.collection('issues').find(filter).toArray();
-  return issues;
+  const cursor = db.collection('issues').find(filter)
+    .sort({ id: 1 })
+    .skip(PAGE_SIZE * (page - 1))
+    .limit(PAGE_SIZE);
+
+  // count(boolean: should skip and limit be applied)
+  const totalCount = await cursor.count(false);
+  const issues = cursor.toArray();
+  const pages = Math.ceil(totalCount / PAGE_SIZE);
+
+  return { issues, pages };
 }
 
 // ------- resolver func for issue field ------------------
