@@ -60,7 +60,7 @@ class IssueList extends React.Component {
 
   constructor(props) {
     super(props);
-    const issues = store.initialData ? store.initialData.issues : null;
+    const issues = store.initialData ? store.initialData.issueList : null;
     const selectedIssue = store.initialData ? store.initialData.issue : null;
     delete store.initialData;
     this.state = {
@@ -79,7 +79,7 @@ class IssueList extends React.Component {
   componentDidUpdate(prevProps) {
     // to update state on url change for filtering
     const {
-      location: { prevSearch },
+      location: { search: prevSearch },
       match: {
         params: { id: prevId },
       },
