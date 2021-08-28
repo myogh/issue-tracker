@@ -1130,10 +1130,11 @@ class IssueFilter extends (react__WEBPACK_IMPORTED_MODULE_0___default().Componen
     if (effortMax) params.set('effortMax', effortMax); // progmatic navigation
 
     const {
-      history
+      history,
+      urlBase
     } = this.props;
     history.push({
-      pathname: '/issues',
+      pathname: urlBase,
       search: params.toString() ? `?${params.toString()}` : ''
     });
   }
@@ -1448,7 +1449,9 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       toggle: true
     }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Panel.Body, {
       collapsible: true
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_3__.default, null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_IssueTable_jsx__WEBPACK_IMPORTED_MODULE_4__.default, {
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_3__.default, {
+      urlBase: "/issues"
+    }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_IssueTable_jsx__WEBPACK_IMPORTED_MODULE_4__.default, {
       issues: issues,
       closeIssue: this.closeIssue,
       deleteIssue: this.deleteIssue
@@ -1474,14 +1477,127 @@ IssueListWithToast.fetchData = IssueList.fetchData;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ IssueReport)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! url-search-params-polyfill */ "url-search-params-polyfill");
+/* harmony import */ var url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _graphQLFetch_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./graphQLFetch.js */ "./src/graphQLFetch.js");
+/* harmony import */ var _IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./IssueFilter.jsx */ "./src/IssueFilter.jsx");
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
+/* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
 
-function IssueReport() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "This is a place holder for report"));
+
+
+
+
+
+
+const statuses = ['New', 'Assigned', 'Fixed', 'Closed'];
+
+class IssueReport extends (react__WEBPACK_IMPORTED_MODULE_1___default().Component) {
+  static async fetchData(match, search, showError) {
+    const params = new URLSearchParams(search);
+    const vars = {};
+    if (params.get('status')) vars.status = params.get('status');
+    const effortMin = parseInt(params.get('efforMin'), 10);
+    if (!Number.isNaN(effortMin)) vars.effortMin = effortMin;
+    const effortMax = parseInt(params.get('efforMax'), 10);
+    if (!Number.isNaN(effortMax)) vars.effortMax = effortMax;
+    const query = `query issueCounts(
+                    $status: String, 
+                    $effortMin: Int, 
+                    $effortMax: Int) {
+                      issueCounts(
+                        status: $status,
+                        effortMin: $effortMin,
+                        effortMax: $effortMax
+                      ) {
+                        owner New Assigned Fixed Closed
+                      }
+                    }`;
+    const data = await (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_3__.default)(query, vars, showError);
+    return data;
+  }
+
+  constructor(props) {
+    super(props);
+    const stats = _store_js__WEBPACK_IMPORTED_MODULE_5__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_5__.default.initialData.issueCounts : null;
+    delete _store_js__WEBPACK_IMPORTED_MODULE_5__.default.initialData;
+    this.state = {
+      stats
+    };
+  }
+
+  componentDidMount() {
+    const {
+      stats
+    } = this.state;
+    if (stats === null) this.loadData();
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      location: {
+        search: prevSearch
+      }
+    } = prevProps;
+    const {
+      location: {
+        search
+      }
+    } = this.props;
+
+    if (prevSearch !== search) {
+      this.loadData();
+    }
+  }
+
+  async loadData() {
+    const {
+      showError
+    } = this.props;
+    const {
+      location: {
+        search
+      },
+      match
+    } = this.props;
+    const result = await IssueReport.fetchData(match, search, showError);
+    this.setState({
+      stats: result ? result.issueCounts : []
+    });
+  }
+
+  render() {
+    const {
+      stats
+    } = this.state;
+    if (stats === null) return null;
+    const headerColumns = statuses.map(status => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("th", null, status));
+    const statRows = stats.map(counts => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("td", null, counts.owner), statuses.map(status => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("td", null, counts[status]))));
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement((react__WEBPACK_IMPORTED_MODULE_1___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Panel, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Panel.Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Panel.Title, {
+      toggle: true
+    }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Panel.Body, {
+      collapsible: true
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_4__.default, {
+      urlBase: "/report"
+    }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Table, {
+      bordered: true,
+      condensed: true,
+      hover: true,
+      responsive: true
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("th", null), headerColumns)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("tbody", null, statRows)));
+  }
+
 }
+
+const IssueReportWithToast = (0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_6__.default)(IssueReport);
+IssueReportWithToast.fetchData = IssueReport.fetchData;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IssueReportWithToast);
 
 /***/ }),
 
@@ -2427,7 +2543,7 @@ module.exports = require("webpack-node-externals");
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("d885bb49fe8eeb554d5d")
+/******/ 		__webpack_require__.h = () => ("983e66ad865dd2ab32cf")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
