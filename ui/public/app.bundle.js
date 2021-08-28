@@ -1554,9 +1554,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! url-search-params-polyfill */ "./node_modules/url-search-params-polyfill/index.js");
 /* harmony import */ var url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Panel.js");
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Table.js");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Panel.js");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Table.js");
 /* harmony import */ var _graphQLFetch_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./graphQLFetch.js */ "./src/graphQLFetch.js");
 /* harmony import */ var _IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./IssueFilter.jsx */ "./src/IssueFilter.jsx");
 /* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
@@ -1586,6 +1587,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -1672,20 +1674,26 @@ var IssueReport = /*#__PURE__*/function (_React$Component) {
       var stats = this.state.stats;
       if (stats === null) return null;
       var headerColumns = statuses.map(function (status) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("th", null, status);
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("th", {
+          key: status
+        }, status);
       });
       var statRows = stats.map(function (counts) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("td", null, counts.owner), statuses.map(function (status) {
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("td", null, counts[status]);
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("tr", {
+          key: counts.owner
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("td", null, counts.owner), statuses.map(function (status) {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("td", {
+            key: (0,uuid__WEBPACK_IMPORTED_MODULE_6__.default)()
+          }, counts[status] ? counts[status] : 0);
         }));
       });
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_6__.default, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_6__.default.Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_6__.default.Title, {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__.default, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__.default.Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__.default.Title, {
         toggle: true
-      }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_6__.default.Body, {
+      }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__.default.Body, {
         collapsible: true
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(_IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_3__.default, {
         urlBase: "/report"
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__.default, {
+      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__.default, {
         bordered: true,
         condensed: true,
         hover: true,
@@ -1704,11 +1712,11 @@ var IssueReport = /*#__PURE__*/function (_React$Component) {
                 params = new URLSearchParams(search);
                 vars = {};
                 if (params.get('status')) vars.status = params.get('status');
-                effortMin = parseInt(params.get('efforMin'), 10);
+                effortMin = parseInt(params.get('effortMin'), 10);
                 if (!Number.isNaN(effortMin)) vars.effortMin = effortMin;
-                effortMax = parseInt(params.get('efforMax'), 10);
+                effortMax = parseInt(params.get('effortMax'), 10);
                 if (!Number.isNaN(effortMax)) vars.effortMax = effortMax;
-                query = "query issueCounts(\n                    $status: String, \n                    $effortMin: Int, \n                    $effortMax: Int) {\n                      issueCounts(\n                        status: $status,\n                        effortMin: $effortMin,\n                        effortMax: $effortMax\n                      ) {\n                        owner New Assigned Fixed Closed\n                      }\n                    }";
+                query = "query issueCounts(\n                    $status: StatusType, \n                    $effortMin: Int, \n                    $effortMax: Int) {\n                      issueCounts(\n                        status: $status,\n                        effortMin: $effortMin,\n                        effortMax: $effortMax\n                      ) {\n                        owner New Assigned Fixed Closed\n                      }\n                    }";
                 _context2.next = 10;
                 return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_2__.default)(query, vars, showError);
 

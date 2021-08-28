@@ -1,4 +1,5 @@
 import 'url-search-params-polyfill';
+import { v4 as uuidv4 } from 'uuid';
 import React from 'react';
 import { Panel, Table } from 'react-bootstrap';
 import graphQLFetch from './graphQLFetch.js';
@@ -14,14 +15,14 @@ class IssueReport extends React.Component {
     const vars = {};
     if (params.get('status')) vars.status = params.get('status');
 
-    const effortMin = parseInt(params.get('efforMin'), 10);
+    const effortMin = parseInt(params.get('effortMin'), 10);
     if (!Number.isNaN(effortMin)) vars.effortMin = effortMin;
 
-    const effortMax = parseInt(params.get('efforMax'), 10);
+    const effortMax = parseInt(params.get('effortMax'), 10);
     if (!Number.isNaN(effortMax)) vars.effortMax = effortMax;
 
     const query = `query issueCounts(
-                    $status: String, 
+                    $status: StatusType, 
                     $effortMin: Int, 
                     $effortMax: Int) {
                       issueCounts(
@@ -72,15 +73,15 @@ class IssueReport extends React.Component {
 
     const headerColumns = (
       statuses.map(status => (
-        <th>{status}</th>
+        <th key={status}>{status}</th>
       ))
     );
 
     const statRows = stats.map(counts => (
-      <tr>
+      <tr key={counts.owner}>
         <td>{counts.owner}</td>
         {statuses.map(status => (
-          <td>{counts[status]}</td>
+          <td key={uuidv4()}>{counts[status] ? counts[status] : 0}</td>
         ))}
       </tr>
     ));
