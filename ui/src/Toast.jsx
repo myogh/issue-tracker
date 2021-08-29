@@ -20,7 +20,13 @@ export default class Toast extends React.Component {
 
     return (
       <Collapse in={showing}>
-        <div style={{ position: 'fixed', bottom: 20, left: 20 }}>
+        <div style={{
+          position: 'fixed',
+          bottom: 20,
+          left: 20,
+          zIndex: 10,
+        }}
+        >
           <Alert bsStyle={bsStyle} onDismiss={onDismiss}>
             {children}
           </Alert>

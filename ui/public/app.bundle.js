@@ -1208,13 +1208,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! url-search-params-polyfill */ "./node_modules/url-search-params-polyfill/index.js");
 /* harmony import */ var url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Panel.js");
-/* harmony import */ var _IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./IssueFilter.jsx */ "./src/IssueFilter.jsx");
-/* harmony import */ var _IssueTable_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./IssueTable.jsx */ "./src/IssueTable.jsx");
-/* harmony import */ var _IssueDetail_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./IssueDetail.jsx */ "./src/IssueDetail.jsx");
-/* harmony import */ var _graphQLFetch_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./graphQLFetch.js */ "./src/graphQLFetch.js");
-/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
-/* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Pagination.js");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Panel.js");
+/* harmony import */ var react_router_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-bootstrap */ "./node_modules/react-router-bootstrap/lib/index.js");
+/* harmony import */ var _IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./IssueFilter.jsx */ "./src/IssueFilter.jsx");
+/* harmony import */ var _IssueTable_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./IssueTable.jsx */ "./src/IssueTable.jsx");
+/* harmony import */ var _IssueDetail_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./IssueDetail.jsx */ "./src/IssueDetail.jsx");
+/* harmony import */ var _graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./graphQLFetch.js */ "./src/graphQLFetch.js");
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
+/* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -1263,6 +1265,27 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+var SECTION_SIZE = 5;
+
+function PageLink(_ref) {
+  var params = _ref.params,
+      page = _ref.page,
+      activePage = _ref.activePage,
+      children = _ref.children;
+  params.set('page', page);
+  if (page === 0) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.cloneElement(children, {
+    disabled: true
+  });
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_router_bootstrap__WEBPACK_IMPORTED_MODULE_2__.LinkContainer, {
+    isActive: function isActive() {
+      return page === activePage;
+    },
+    to: {
+      search: "?".concat(params.toString())
+    }
+  }, children);
+}
+
 var IssueList = /*#__PURE__*/function (_React$Component) {
   _inherits(IssueList, _React$Component);
 
@@ -1274,11 +1297,17 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
     _classCallCheck(this, IssueList);
 
     _this = _super.call(this, props);
-    var issues = _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData.issueList.issues : null;
-    var selectedIssue = _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData ? _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData.issue : null;
-    delete _store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData;
+    var initialData = _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData || {
+      issueList: {}
+    };
+    var _initialData$issueLis = initialData.issueList,
+        issues = _initialData$issueLis.issues,
+        pages = _initialData$issueLis.pages,
+        selectedIssue = initialData.issue;
+    delete _store_js__WEBPACK_IMPORTED_MODULE_7__.default.initialData;
     _this.state = {
       issues: issues,
+      pages: pages,
       selectedIssue: selectedIssue
     };
     _this.closeIssue = _this.closeIssue.bind(_assertThisInitialized(_this));
@@ -1324,7 +1353,7 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
                 query = "mutation issueClose($id: Int!){\n                        issueUpdate(id: $id, changes: {status: Closed}){\n                            id title status owner\n                            effort created due description\n                        }\n                   }";
                 showError = this.props.showError;
                 _context.next = 5;
-                return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_5__.default)(query, {
+                return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__.default)(query, {
                   id: issues[index].id
                 }, showError);
 
@@ -1374,7 +1403,7 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
                 id = issues[index].id;
                 showError = this.props.showError;
                 _context2.next = 7;
-                return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_5__.default)(query, {
+                return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__.default)(query, {
                   id: Number(id)
                 }, showError);
 
@@ -1443,6 +1472,7 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
                 if (data) {
                   this.setState({
                     issues: data.issueList.issues,
+                    pages: data.issueList.pages,
                     selectedIssue: data.issue
                   });
                 }
@@ -1464,29 +1494,57 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
+      var issues = this.state.issues;
+      if (issues == null) return null; // -------- pagination logics ---------------
+
       var _this$state = this.state,
-          issues = _this$state.issues,
-          selectedIssue = _this$state.selectedIssue;
-      if (issues == null) return null;
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__.default, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__.default.Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__.default.Title, {
+          selectedIssue = _this$state.selectedIssue,
+          pages = _this$state.pages;
+      var search = this.props.location.search;
+      var params = new URLSearchParams(search);
+      var page = parseInt(params.get('page'), 10);
+      if (Number.isNaN(page)) page = 1;
+      var startPage = Math.floor((page - 1) / SECTION_SIZE) * SECTION_SIZE + 1;
+      var endPage = startPage + SECTION_SIZE - 1;
+      var prevSection = startPage === 1 ? 0 : startPage - SECTION_SIZE;
+      var nextSection = endPage >= pages ? 0 : startPage + SECTION_SIZE;
+      var items = [];
+
+      for (var i = startPage; i <= Math.min(endPage, pages); i += 1) {
+        params.set('page', i);
+        items.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(PageLink, {
+          key: i,
+          params: params,
+          activePage: page,
+          page: i
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_9__.default.Item, null, i)));
+      }
+
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default.Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default.Title, {
         toggle: true
-      }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__.default.Body, {
+      }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default.Body, {
         collapsible: true
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_2__.default, {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_3__.default, {
         urlBase: "/issues"
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_IssueTable_jsx__WEBPACK_IMPORTED_MODULE_3__.default, {
+      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_IssueTable_jsx__WEBPACK_IMPORTED_MODULE_4__.default, {
         issues: issues,
         closeIssue: this.closeIssue,
         deleteIssue: this.deleteIssue
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_IssueDetail_jsx__WEBPACK_IMPORTED_MODULE_4__.default, {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_IssueDetail_jsx__WEBPACK_IMPORTED_MODULE_5__.default, {
         issue: selectedIssue
-      }));
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_9__.default, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(PageLink, {
+        params: params,
+        page: prevSection
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_9__.default.Item, null, '<')), items, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(PageLink, {
+        params: params,
+        page: nextSection
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_9__.default.Item, null, '>'))));
     }
   }], [{
     key: "fetchData",
     value: function () {
       var _fetchData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(match, search, showError) {
-        var params, vars, id, idInt, effortMin, effortMax, query, data;
+        var params, vars, id, idInt, effortMin, effortMax, page, query, data;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -1509,15 +1567,18 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
                 if (!Number.isNaN(effortMin)) vars.effortMin = effortMin;
                 effortMax = parseInt(params.get('effortMax'), 10);
                 if (!Number.isNaN(effortMax)) vars.effortMax = effortMax;
-                query = "query issueList(\n                     $status: StatusType,\n                     $effortMin: Int,\n                     $effortMax: Int,\n                     $hasSelection: Boolean!,\n                     $selectedId: Int!\n                     ){\n                      issueList(\n                        status: $status,\n                        effortMin: $effortMin,\n                        effortMax: $effortMax\n                        ){\n                          issues {\n                            id title\n                            status owner\n                            created effort due\n                          }\n                         }\n                      issue(id: $selectedId) @include (if: $hasSelection){\n                        id description\n                      }\n                    }";
-                _context4.next = 13;
-                return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_5__.default)(query, vars, showError);
+                page = parseInt(params.get('page'), 10);
+                if (Number.isNaN(page)) page = 1;
+                vars.page = page;
+                query = "query issueList(\n                     $status: StatusType,\n                     $effortMin: Int,\n                     $effortMax: Int,\n                     $hasSelection: Boolean!,\n                     $selectedId: Int!,\n                     $page: Int\n                     ){\n                      issueList(\n                        status: $status,\n                        effortMin: $effortMin,\n                        effortMax: $effortMax,\n                        page: $page\n                        ){\n                          issues {\n                            id title\n                            status owner\n                            created effort due\n                          }\n                          pages\n                         }\n                      issue(id: $selectedId) @include (if: $hasSelection){\n                        id description\n                      }\n                    }";
+                _context4.next = 16;
+                return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__.default)(query, vars, showError);
 
-              case 13:
+              case 16:
                 data = _context4.sent;
                 return _context4.abrupt("return", data);
 
-              case 15:
+              case 18:
               case "end":
                 return _context4.stop();
             }
@@ -1536,7 +1597,7 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
   return IssueList;
 }(react__WEBPACK_IMPORTED_MODULE_0__.Component);
 
-var IssueListWithToast = (0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_7__.default)(IssueList);
+var IssueListWithToast = (0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_8__.default)(IssueList);
 IssueListWithToast.fetchData = IssueList.fetchData;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IssueListWithToast);
 
