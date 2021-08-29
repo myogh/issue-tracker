@@ -1169,6 +1169,24 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     }
   }
 
+  async restoreIssue(id) {
+    const query = `mutation issueRestore($id: Int!) {
+      issueRestore(id: $id)
+    }`;
+    const {
+      showError,
+      showSuccess
+    } = this.props;
+    const data = await (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_7__.default)(query, {
+      id
+    }, showError);
+
+    if (data) {
+      showSuccess(`Issue ${id} restored successfully.`);
+      this.loadData();
+    }
+  }
+
   async deleteIssue(index) {
     const query = `mutation issueDelete($id: Int!){
                         issueDelete(id: $id)
@@ -1211,8 +1229,13 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       });
       const {
         showSuccess
-      } = this.props;
-      showSuccess(`Deleted issue ${id} successfully.`);
+      } = this.props; // show undo option upon issue delete success
+
+      const undoMessage = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, `Deleted issue ${id} successfully.`, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Button, {
+        bsStyle: "link",
+        onClick: () => this.restoreIssue(id)
+      }, "UNDO"));
+      showSuccess(undoMessage);
     } else {
       this.loadData();
     }
@@ -1838,7 +1861,8 @@ class Toast extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
       style: {
         position: 'fixed',
         bottom: 20,
-        left: 20
+        left: 20,
+        zIndex: 10
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Alert, {
       bsStyle: bsStyle,

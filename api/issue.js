@@ -5,7 +5,7 @@ const PAGE_SIZE = 10;
 // ----------- resolver func for isseList field ------------
 
 // eslint-disable-next-line
-async function list(_, { status, effortMin, effortMax, page }) {
+async function list(_, { status, effortMin, effortMax, search, page }) {
   const db = getDb();
 
   const filter = {};
@@ -16,6 +16,8 @@ async function list(_, { status, effortMin, effortMax, page }) {
     if (effortMin !== undefined) filter.effort.$gte = effortMin;
     if (effortMax !== undefined) filter.effort.$lte = effortMax;
   }
+
+  if (search) filter.$text = { $search: search };
 
   const cursor = db.collection('issues').find(filter)
     .sort({ id: 1 })

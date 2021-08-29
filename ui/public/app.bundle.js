@@ -1208,8 +1208,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! url-search-params-polyfill */ "./node_modules/url-search-params-polyfill/index.js");
 /* harmony import */ var url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(url_search_params_polyfill__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Pagination.js");
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Panel.js");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Button.js");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Pagination.js");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Panel.js");
 /* harmony import */ var react_router_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-bootstrap */ "./node_modules/react-router-bootstrap/lib/index.js");
 /* harmony import */ var _IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./IssueFilter.jsx */ "./src/IssueFilter.jsx");
 /* harmony import */ var _IssueTable_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./IssueTable.jsx */ "./src/IssueTable.jsx");
@@ -1388,27 +1389,68 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
       return closeIssue;
     }()
   }, {
-    key: "deleteIssue",
+    key: "restoreIssue",
     value: function () {
-      var _deleteIssue = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(index) {
-        var query, issues, _this$props2, _this$props2$location, pathname, search, history, id, showError, data, showSuccess;
+      var _restoreIssue = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(id) {
+        var query, _this$props2, showError, showSuccess, data;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
+                query = "mutation issueRestore($id: Int!) {\n      issueRestore(id: $id)\n    }";
+                _this$props2 = this.props, showError = _this$props2.showError, showSuccess = _this$props2.showSuccess;
+                _context2.next = 4;
+                return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__.default)(query, {
+                  id: id
+                }, showError);
+
+              case 4:
+                data = _context2.sent;
+
+                if (data) {
+                  showSuccess("Issue ".concat(id, " restored successfully."));
+                  this.loadData();
+                }
+
+              case 6:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function restoreIssue(_x2) {
+        return _restoreIssue.apply(this, arguments);
+      }
+
+      return restoreIssue;
+    }()
+  }, {
+    key: "deleteIssue",
+    value: function () {
+      var _deleteIssue = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(index) {
+        var _this2 = this;
+
+        var query, issues, _this$props3, _this$props3$location, pathname, search, history, id, showError, data, showSuccess, undoMessage;
+
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
                 query = "mutation issueDelete($id: Int!){\n                        issueDelete(id: $id)\n                    }";
                 issues = this.state.issues;
-                _this$props2 = this.props, _this$props2$location = _this$props2.location, pathname = _this$props2$location.pathname, search = _this$props2$location.search, history = _this$props2.history;
+                _this$props3 = this.props, _this$props3$location = _this$props3.location, pathname = _this$props3$location.pathname, search = _this$props3$location.search, history = _this$props3.history;
                 id = issues[index].id;
                 showError = this.props.showError;
-                _context2.next = 7;
+                _context3.next = 7;
                 return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__.default)(query, {
                   id: Number(id)
                 }, showError);
 
               case 7:
-                data = _context2.sent;
+                data = _context3.sent;
 
                 if (data && data.issueDelete) {
                   this.setState(function (prevState) {
@@ -1427,21 +1469,28 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
                       issues: newList
                     };
                   });
-                  showSuccess = this.props.showSuccess;
-                  showSuccess("Deleted issue ".concat(id, " successfully."));
+                  showSuccess = this.props.showSuccess; // show undo option upon issue delete success
+
+                  undoMessage = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null, "Deleted issue ".concat(id, " successfully."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_9__.default, {
+                    bsStyle: "link",
+                    onClick: function onClick() {
+                      return _this2.restoreIssue(id);
+                    }
+                  }, "UNDO"));
+                  showSuccess(undoMessage);
                 } else {
                   this.loadData();
                 }
 
               case 9:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee3, this);
       }));
 
-      function deleteIssue(_x2) {
+      function deleteIssue(_x3) {
         return _deleteIssue.apply(this, arguments);
       }
 
@@ -1450,24 +1499,24 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "loadData",
     value: function () {
-      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-        var _this$props3, search, match, showError, data;
+      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+        var _this$props4, search, match, showError, data;
 
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 /**
                  * Fetches list of issues from the database via API call.
                  * Updates the data state on the client side.
                  */
-                _this$props3 = this.props, search = _this$props3.location.search, match = _this$props3.match;
+                _this$props4 = this.props, search = _this$props4.location.search, match = _this$props4.match;
                 showError = this.props.showError;
-                _context3.next = 4;
+                _context4.next = 4;
                 return IssueList.fetchData(match, search, showError);
 
               case 4:
-                data = _context3.sent;
+                data = _context4.sent;
 
                 if (data) {
                   this.setState({
@@ -1479,10 +1528,10 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
 
               case 6:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee4, this);
       }));
 
       function loadData() {
@@ -1517,12 +1566,12 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
           params: params,
           activePage: page,
           page: i
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_9__.default.Item, null, i)));
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default.Item, null, i)));
       }
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default.Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default.Title, {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_11__.default, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_11__.default.Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_11__.default.Title, {
         toggle: true
-      }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default.Body, {
+      }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_11__.default.Body, {
         collapsible: true
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_3__.default, {
         urlBase: "/issues"
@@ -1532,22 +1581,22 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
         deleteIssue: this.deleteIssue
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_IssueDetail_jsx__WEBPACK_IMPORTED_MODULE_5__.default, {
         issue: selectedIssue
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_9__.default, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(PageLink, {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(PageLink, {
         params: params,
         page: prevSection
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_9__.default.Item, null, '<')), items, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(PageLink, {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default.Item, null, '<')), items, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(PageLink, {
         params: params,
         page: nextSection
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_9__.default.Item, null, '>'))));
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default.Item, null, '>'))));
     }
   }], [{
     key: "fetchData",
     value: function () {
-      var _fetchData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(match, search, showError) {
+      var _fetchData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(match, search, showError) {
         var params, vars, id, idInt, effortMin, effortMax, page, query, data;
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 params = new URLSearchParams(search);
                 vars = {
@@ -1571,22 +1620,22 @@ var IssueList = /*#__PURE__*/function (_React$Component) {
                 if (Number.isNaN(page)) page = 1;
                 vars.page = page;
                 query = "query issueList(\n                     $status: StatusType,\n                     $effortMin: Int,\n                     $effortMax: Int,\n                     $hasSelection: Boolean!,\n                     $selectedId: Int!,\n                     $page: Int\n                     ){\n                      issueList(\n                        status: $status,\n                        effortMin: $effortMin,\n                        effortMax: $effortMax,\n                        page: $page\n                        ){\n                          issues {\n                            id title\n                            status owner\n                            created effort due\n                          }\n                          pages\n                         }\n                      issue(id: $selectedId) @include (if: $hasSelection){\n                        id description\n                      }\n                    }";
-                _context4.next = 16;
+                _context5.next = 16;
                 return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__.default)(query, vars, showError);
 
               case 16:
-                data = _context4.sent;
-                return _context4.abrupt("return", data);
+                data = _context5.sent;
+                return _context5.abrupt("return", data);
 
               case 18:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }));
 
-      function fetchData(_x3, _x4, _x5) {
+      function fetchData(_x4, _x5, _x6) {
         return _fetchData.apply(this, arguments);
       }
 
@@ -2307,7 +2356,8 @@ var Toast = /*#__PURE__*/function (_React$Component) {
         style: {
           position: 'fixed',
           bottom: 20,
-          left: 20
+          left: 20,
+          zIndex: 10
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.default, {
         bsStyle: bsStyle,

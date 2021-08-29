@@ -1,6 +1,6 @@
 import React from 'react';
 import 'url-search-params-polyfill';
-import { Panel, Pagination } from 'react-bootstrap';
+import { Panel, Pagination, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
@@ -151,6 +151,18 @@ class IssueList extends React.Component {
     }
   }
 
+  async restoreIssue(id) {
+    const query = `mutation issueRestore($id: Int!) {
+      issueRestore(id: $id)
+    }`;
+    const { showError, showSuccess } = this.props;
+    const data = await graphQLFetch(query, { id }, showError);
+    if (data) {
+      showSuccess(`Issue ${id} restored successfully.`);
+      this.loadData();
+    }
+  }
+
   async deleteIssue(index) {
     const query = `mutation issueDelete($id: Int!){
                         issueDelete(id: $id)
@@ -180,7 +192,17 @@ class IssueList extends React.Component {
       });
 
       const { showSuccess } = this.props;
-      showSuccess(`Deleted issue ${id} successfully.`);
+
+      // show undo option upon issue delete success
+      const undoMessage = (
+        <span>
+          {`Deleted issue ${id} successfully.`}
+          <Button bsStyle="link" onClick={() => this.restoreIssue(id)}>
+            UNDO
+          </Button>
+        </span>
+      );
+      showSuccess(undoMessage);
     } else {
       this.loadData();
     }
