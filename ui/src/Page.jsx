@@ -9,7 +9,7 @@ import {
   Grid,
   Col,
 } from 'react-bootstrap';
-// import { LinkContainer } from 'react-router-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 import Contents from './Contents.jsx';
 import IssueAddNavItem from './IssueAddNavItem.jsx';
 import Search from './Search.jsx';
@@ -21,9 +21,15 @@ function NavBar() {
         <Navbar.Brand>Issue Tracker</Navbar.Brand>
       </Navbar.Header>
       <Nav>
-        <NavItem href="/">Home</NavItem>
-        <NavItem href="/issues">Issue List</NavItem>
-        <NavItem href="/report">Report</NavItem>
+        <LinkContainer exact to="/">
+          <NavItem>Home</NavItem>
+        </LinkContainer>
+        <LinkContainer to="/issues">
+          <NavItem>Issue List</NavItem>
+        </LinkContainer>
+        <LinkContainer to="/report">
+          <NavItem>Report</NavItem>
+        </LinkContainer>
       </Nav>
       <Col sm={4} md={5}>
         <Navbar.Form>
