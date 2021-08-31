@@ -31,27 +31,45 @@ __webpack_require__.r(__webpack_exports__);
 
 
 async function render(req, res) {
+  /**
+   * Serves as an express middleware for all the urls in the ui server.
+   * Matches the request path with the ones in routes.js.
+   * Fetches data from api server, and saves it in global "store" object.
+   * Converts the element to markup string and sends it to the client.
+   */
+  // -------- ui server fetchs data from the api server ----------
+  // matchPath(): Returns the "match" object { params: '...' } and null if the
+  // path doesn't match.
+  // https://reactrouter.com/web/api/matchPath
   const activeRoute = _src_routes_js__WEBPACK_IMPORTED_MODULE_5__.default.find(route => (0,react_router_dom__WEBPACK_IMPORTED_MODULE_2__.matchPath)(req.path, route));
   let initialData;
 
   if (activeRoute && activeRoute.component.fetchData) {
-    const match = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_2__.matchPath)(req.path, activeRoute);
+    // get the match obj to feed it to fetchData()
+    const match = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_2__.matchPath)(req.path, activeRoute); // get the search query string
+
     const index = req.path.indexOf('?');
-    const search = index !== -1 ? req.path.substr(index) : null;
+    const search = index !== -1 ? req.path.substr(index) : null; // fetch data and store it in initialData.
+
     initialData = await activeRoute.component.fetchData(match, search);
   }
 
-  const context = {};
-  _src_store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData = initialData;
+  _src_store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData = initialData; // ------- render the routed element to markup -----------------
+  // this object signfies any redirects with the help of StaticRouter
+
+  const context = {}; // StaticRouter renders one particular component based on its location props
+
   const element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__.StaticRouter, {
     location: req.url,
     context: context
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_src_Page_jsx__WEBPACK_IMPORTED_MODULE_4__.default, null));
-  const body = react_dom_server__WEBPACK_IMPORTED_MODULE_1___default().renderToString(element);
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_src_Page_jsx__WEBPACK_IMPORTED_MODULE_4__.default, null)); // create a markup of the component without any event handlers 
+
+  const body = react_dom_server__WEBPACK_IMPORTED_MODULE_1___default().renderToString(element); // ------ send resource to the client ------------
 
   if (context.url) {
     res.redirect(301, context.url);
   } else {
+    // send the fetched data alongside the markup
     res.send((0,_template_js__WEBPACK_IMPORTED_MODULE_3__.default)(body, initialData));
   }
 }
@@ -75,6 +93,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var serialize_javascript__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(serialize_javascript__WEBPACK_IMPORTED_MODULE_0__);
 
 function template(body, data) {
+  /**
+   * Creat a html template for server-side rendering.
+   * Params - body: markup string from ReactDOMServer.renderToString()
+   *          data: fetched data object from the graphql api
+   */
   return `<!DOCTYPE HTML>
 <html>
 <head>
@@ -1816,6 +1839,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Contents_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Contents.jsx */ "./src/Contents.jsx");
 /* harmony import */ var _IssueAddNavItem_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./IssueAddNavItem.jsx */ "./src/IssueAddNavItem.jsx");
 /* harmony import */ var _Search_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Search.jsx */ "./src/Search.jsx");
+/* harmony import */ var _SignInNavItem_jsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./SignInNavItem.jsx */ "./src/SignInNavItem.jsx");
+
 
 
 
@@ -1836,7 +1861,7 @@ function NavBar() {
     md: 5
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Navbar.Form, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Search_jsx__WEBPACK_IMPORTED_MODULE_5__.default, null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Nav, {
     pullRight: true
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_IssueAddNavItem_jsx__WEBPACK_IMPORTED_MODULE_4__.default, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.NavDropdown, {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_IssueAddNavItem_jsx__WEBPACK_IMPORTED_MODULE_4__.default, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_SignInNavItem_jsx__WEBPACK_IMPORTED_MODULE_6__.default, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.NavDropdown, {
     id: "user-dropdown",
     title: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Glyphicon, {
       glyph: "option-vertical"
@@ -1950,6 +1975,110 @@ class Search extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.withRouter)((0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_4__.default)(Search)));
+
+/***/ }),
+
+/***/ "./src/SignInNavItem.jsx":
+/*!*******************************!*\
+  !*** ./src/SignInNavItem.jsx ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ SignInNavItem)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__);
+
+
+class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {
+        signedIn: false,
+        username: ''
+      },
+      showingModal: false
+    };
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+    this.signIn = this.signIn.bind(this);
+    this.signOut = this.signOut.bind(this);
+  }
+
+  showModal() {
+    this.setState({
+      showingModal: true
+    });
+  }
+
+  hideModal() {
+    this.setState({
+      showingModal: false
+    });
+  }
+
+  signIn() {
+    this.hideModal();
+    this.setState({
+      user: {
+        signedIn: true,
+        username: 'User1'
+      }
+    });
+  }
+
+  signOut() {
+    this.setState({
+      user: {
+        signedIn: false,
+        username: ''
+      }
+    });
+  }
+
+  render() {
+    const {
+      user
+    } = this.state;
+
+    if (user.signedIn) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.NavDropdown, {
+        title: user.username,
+        id: "user"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+        onClick: this.signOut
+      }, "Sign out")));
+    }
+
+    const {
+      showingModal
+    } = this.state;
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.NavItem, {
+      onClick: this.showModal
+    }, "Sign in"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal, {
+      keyboard: true,
+      show: showingModal,
+      onHide: this.hideModal,
+      bsSize: "sm"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Header, {
+      closeButton: true
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Title, null, "Sign in")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Body, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Button, {
+      block: true,
+      bsStyle: "primary",
+      onClick: this.signIn
+    }, "Sign In")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Footer, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Button, {
+      bsStyle: "link",
+      onClick: this.hideModal
+    }, "Cancel"))));
+  }
+
+}
 
 /***/ }),
 
@@ -2664,7 +2793,7 @@ if (!process.env.UI_SERVER_API_ENDPOINT) {
 }
 
 const port = process.env.UI_SERVER_PORT || 8000;
-const enableHMR = process.env.ENABLE_HMR === 'true';
+const enableHMR = process.env.ENABLE_HMR === 'true'; // ----- Hot module replacement in dev mode --------------
 
 if (enableHMR && "development" !== 'production') {
   console.log('Adding dev middleware, enabling HMR');
@@ -2686,7 +2815,8 @@ if (enableHMR && "development" !== 'production') {
   const compiler = webpack(config);
   app.use(devMiddleware(compiler));
   app.use(hotMiddleware(compiler));
-}
+} // ------ route handlers and middlewares --------------
+
 
 app.use(express__WEBPACK_IMPORTED_MODULE_1___default().static('public'));
 app.get('/env.js', (_, res) => {
