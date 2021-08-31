@@ -20,7 +20,13 @@ import store from './store.js';
 import withToast from './withToast.jsx';
 
 class IssueEdit extends React.Component {
-  static async fetchData(match, _, showError) {
+  static async fetchData(match, search, showError) {
+    /**
+     * Fetches an issue with a particular id from the graphQL api server
+     * Params - match: <Object> from react router
+     *          search: String from react router
+     *          showError: Func from ToastWrapper
+     */
     const query = `query issue($id: Int!){
             issue(id: $id){
                 id title status owner
@@ -43,9 +49,9 @@ class IssueEdit extends React.Component {
     delete store.initialData;
 
     this.state = {
-      issue,
-      invalidFields: {},
-      showingValidation: false,
+      issue, // <Object>
+      invalidFields: {}, // the fields of invalid user inputs
+      showingValidation: false, // validation message at the end of the form
     };
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -77,6 +83,7 @@ class IssueEdit extends React.Component {
     }
   }
 
+  // handles changes on the validity information of each of the input elements
   onValidityChange(e, valid) {
     const { name } = e.target;
     this.setState((prevState) => {
@@ -86,8 +93,12 @@ class IssueEdit extends React.Component {
     });
   }
 
+  // update the state.issue using the values from the user inputs
   onChange(e, naturalValue) {
     const { name, value: textValue } = e.target;
+
+    // if the input value with its true type is not passed, use the
+    // one with ordinary unconverted string input value from event object.
     const value = naturalValue === undefined ? textValue : naturalValue;
 
     this.setState(prevState => ({
@@ -96,8 +107,14 @@ class IssueEdit extends React.Component {
   }
 
   async handleSubmit(e) {
+    /**
+     * Submit the database with the new user input values in the form, by
+     * making a mutation request to the graphQL server.
+     * If there's any invalidFields left, terminate this method.
+     */
     e.preventDefault();
     this.showValidation();
+
     const { issue, invalidFields } = this.state;
 
     // check validity of inputs before updating
@@ -113,6 +130,7 @@ class IssueEdit extends React.Component {
 
     const { id, created, ...changes } = issue;
     const { showError, showSuccess } = this.props;
+
     const data = await graphQLFetch(query, { id, changes }, showError);
     if (data) {
       this.setState({ issue: data.issueUpdate });
@@ -120,6 +138,7 @@ class IssueEdit extends React.Component {
     }
   }
 
+  // load data from the graphql api server
   async loadData() {
     const { match, showError } = this.props;
     const data = await IssueEdit.fetchData(match, null, showError);
@@ -138,6 +157,9 @@ class IssueEdit extends React.Component {
     const { issue } = this.state;
     if (issue == null) return null;
 
+    // ----- check if the "id" exists when
+    // "prev" and next links are used at the bottom ------------
+
     const {
       issue: { id },
     } = this.state;
@@ -155,6 +177,8 @@ class IssueEdit extends React.Component {
       return null;
     }
 
+    // --- create a validtion message based on the state of the component ----
+
     const { invalidFields, showingValidation } = this.state;
 
     let validationMessage;
@@ -167,13 +191,17 @@ class IssueEdit extends React.Component {
       );
     }
 
+    // --------- ui presentation -----------------
+
     return (
       <Panel>
         <Panel.Heading>
           <Panel.Title>{`Editing issue: ${id}`}</Panel.Title>
         </Panel.Heading>
         <Panel.Body>
+          {/* horizontal form to edit an issue */}
           <Form horizontal onSubmit={this.handleSubmit}>
+            {/* created form field */}
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>
                 Created
@@ -184,6 +212,7 @@ class IssueEdit extends React.Component {
                 </FormControl.Static>
               </Col>
             </FormGroup>
+            {/* status form field */}
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>
                 Status
@@ -202,6 +231,7 @@ class IssueEdit extends React.Component {
                 </FormControl>
               </Col>
             </FormGroup>
+            {/* owner form field */}
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>
                 Owner
@@ -216,6 +246,7 @@ class IssueEdit extends React.Component {
                 />
               </Col>
             </FormGroup>
+            {/* effort form field */}
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>
                 Effort
@@ -230,6 +261,7 @@ class IssueEdit extends React.Component {
                 />
               </Col>
             </FormGroup>
+            {/* due date form field */}
             <FormGroup validationState={invalidFields.due ? 'error' : null}>
               <Col componentClass={ControlLabel} sm={3}>
                 Due
@@ -246,6 +278,7 @@ class IssueEdit extends React.Component {
                 <FormControl.Feedback />
               </Col>
             </FormGroup>
+            {/* title form field */}
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>
                 Title
@@ -261,6 +294,7 @@ class IssueEdit extends React.Component {
                 />
               </Col>
             </FormGroup>
+            {/* issue description form field */}
             <FormGroup>
               <Col componentClass={ControlLabel} sm={3}>
                 Description
@@ -278,6 +312,7 @@ class IssueEdit extends React.Component {
                 />
               </Col>
             </FormGroup>
+            {/* submit button */}
             <FormGroup>
               <Col smOffset={3} sm={6}>
                 <ButtonToolbar>
@@ -290,6 +325,7 @@ class IssueEdit extends React.Component {
                 </ButtonToolbar>
               </Col>
             </FormGroup>
+            {/* form inputs validation message */}
             <FormGroup>
               <Col smOffset={3} sm={9}>
                 {validationMessage}
@@ -297,6 +333,7 @@ class IssueEdit extends React.Component {
             </FormGroup>
           </Form>
         </Panel.Body>
+        {/* prev and next page */}
         <Panel.Footer>
           <Link to={`/edit/${id - 1}`}>Prev</Link>
           {' | '}

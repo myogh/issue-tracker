@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 
+// JSON parser reviver function to parse date string as Date objects
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
-
 function jsonDateReviver(_, value) {
   if (dateRegex.test(value)) return new Date(value);
   return value;
@@ -9,17 +9,19 @@ function jsonDateReviver(_, value) {
 
 export default async function graphQLFetch(
   query,
-  variables = {
-  },
+  variables = {},
   showError = null,
 ) {
   /**
-   * Params: query string, variables if to mutate data in server.
-   * Fetches list of issue from the server.
+   * Fetches list of issues from the server.
    * Displays errors based on the result.
    * Returns the fetched issue list.
+   * Params - query: String, GraphQL query string,
+   *          variables: <Object>, GraphqQL query variables
+   *          showError: Func from Toast
    */
 
+  // __isBrowser__ constant formed at Webpack bundling process
   // eslint-disable-next-line no-undef
   const apiEndpoint = __isBrowser__
     ? window.ENV.UI_API_ENDPOINT

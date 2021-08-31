@@ -11,6 +11,7 @@ class Search extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  // asynchronously load options from a remote server
   async loadOptions(inputValue, callback) {
     if (inputValue.length < 3) return [];
     const query = `query issueList($search: String) {
@@ -24,6 +25,7 @@ class Search extends React.Component {
     const { showError } = this.props;
     const data = await graphQLFetch(query, { search: inputValue }, showError);
 
+    // returns a list of options<Object> array. {label: "", value: ""}
     const options = () => data.issueList.issues.map(issue => (
       { label: `#${issue.id}: ${issue.title}`, value: issue.id }
     ));
@@ -32,6 +34,8 @@ class Search extends React.Component {
     return undefined;
   }
 
+  // handles when the AsyncSelect value is changed
+  // (when one of the options is selected).
   handleChange(option) {
     const { history } = this.props;
     history.push({

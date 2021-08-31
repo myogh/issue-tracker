@@ -2,6 +2,10 @@ import React from 'react';
 import Toast from './Toast.jsx';
 
 export default function withToast(OriginalComponent) {
+  /**
+   * Wraps the OriginalComponent with a Toast.
+   * Holds the required logic for the Toast component
+   */
   return class ToastWrapper extends React.Component {
     constructor(props) {
       super(props);

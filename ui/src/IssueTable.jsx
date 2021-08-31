@@ -8,6 +8,7 @@ import {
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { withRouter } from 'react-router-dom';
+
 // -------- Issue Row Component ---------------
 
 const IssueRow = withRouter(
@@ -16,19 +17,24 @@ const IssueRow = withRouter(
   }) => {
     /**
      * Represents each row of issue in a IssueTable.
-     * Props: issue from Table, and location from withRouter
+     * Props: issue: {[string]: any}, search: String
+     *        closeIssue: Func(index), index: Int
+     *        deleteIssue: Func(index)
+     * Parent: IssueTable
      */
 
-    const selectLocation = { pathname: `/issues/${issue.id}`, search };
+    // tooltip elements to be used in OverLay
     const closeTooltip = <Tooltip id="close-tooltip">Close Issue</Tooltip>;
     const deleteTooltip = <Tooltip id="delete-tooltip">Delete Issue</Tooltip>;
     const editTooltip = <Tooltip id="edit-tooltip">Edit Issue</Tooltip>;
 
+    // handles the event of click on close issue button in each row
     function onClose(e) {
       e.preventDefault();
       closeIssue(index);
     }
 
+    // handles the event of click on delete issue button in each row
     function onDelete(e) {
       e.preventDefault();
       deleteIssue(index);
@@ -73,7 +79,10 @@ const IssueRow = withRouter(
       </tr>
     );
 
-    return <LinkContainer to={selectLocation}>{tableRow}</LinkContainer>;
+    const selectedLocation = { pathname: `/issues/${issue.id}`, search };
+
+    // each tableRow becomes a link to display description of each id
+    return <LinkContainer to={selectedLocation}>{tableRow}</LinkContainer>;
   },
 );
 
@@ -82,8 +91,12 @@ const IssueRow = withRouter(
 export default function IssueTable({ issues, closeIssue, deleteIssue }) {
   /**
    * Displays a list of issues in a table.
-   * Props: list of issue objects.
+   * Props: issues: Array<Objects>
+   *        closeIssue: Func
+   *        deleteIssue: Func
    */
+
+  // map each issue object to IssueRow
   const issueRows = issues.map((issue, index) => (
     <IssueRow
       key={issue.id}
@@ -93,6 +106,7 @@ export default function IssueTable({ issues, closeIssue, deleteIssue }) {
       index={index}
     />
   ));
+
   return (
     <Table bordered condensed hover responsive>
       <thead>

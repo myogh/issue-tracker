@@ -181,6 +181,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 
 
+ // contents of the pages below the naviagtion bar
 
 function Contents() {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Switch, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Redirect, {
@@ -237,7 +238,8 @@ class DateInput extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
-  }
+  } // handles changes in the input box
+
 
   onChange(e) {
     if (e.target.value.match(/^[\d-]*$/)) {
@@ -245,14 +247,15 @@ class DateInput extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
         value: e.target.value
       });
     }
-  } // user clicks the input box
+  } // executed when the user clicks the input box
 
 
   onFocus() {
     this.setState({
       focus: true
     });
-  }
+  } // executed when the input box get unfocused
+
 
   onBlur(e) {
     const {
@@ -351,6 +354,12 @@ class IssueAddNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Comp
   }
 
   async handleSubmit(e) {
+    /**
+     * Once the input form is submitted, it creats a new issue object
+     * using the values from the form and sends a issueAdd mutation
+     * request to the graphQL server. Then it navigates to the corresponding
+     * issue edit page to further add info to the new added issue.
+     */
     e.preventDefault();
     this.hideModal();
     const form = document.forms.issueAdd;
@@ -485,7 +494,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
-  static async fetchData(match, _, showError) {
+  static async fetchData(match, search, showError) {
+    /**
+     * Fetches an issue with a particular id from the graphQL api server
+     * Params - match: <Object> from react router
+     *          search: String from react router
+     *          showError: Func from ToastWrapper
+     */
     const query = `query issue($id: Int!){
             issue(id: $id){
                 id title status owner
@@ -509,8 +524,11 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     delete _store_js__WEBPACK_IMPORTED_MODULE_8__.default.initialData;
     this.state = {
       issue,
+      // <Object>
       invalidFields: {},
-      showingValidation: false
+      // the fields of invalid user inputs
+      showingValidation: false // validation message at the end of the form
+
     };
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -546,7 +564,8 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     if (prevId !== id) {
       this.loadData();
     }
-  }
+  } // handles changes on the validity information of each of the input elements
+
 
   onValidityChange(e, valid) {
     const {
@@ -561,13 +580,16 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
         invalidFields
       };
     });
-  }
+  } // update the state.issue using the values from the user inputs
+
 
   onChange(e, naturalValue) {
     const {
       name,
       value: textValue
-    } = e.target;
+    } = e.target; // if the input value with its true type is not passed, use the
+    // one with ordinary unconverted string input value from event object.
+
     const value = naturalValue === undefined ? textValue : naturalValue;
     this.setState(prevState => ({
       issue: { ...prevState.issue,
@@ -577,6 +599,11 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
   }
 
   async handleSubmit(e) {
+    /**
+     * Submit the database with the new user input values in the form, by
+     * making a mutation request to the graphQL server.
+     * If there's any invalidFields left, terminate this method.
+     */
     e.preventDefault();
     this.showValidation();
     const {
@@ -612,7 +639,8 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       });
       showSuccess('Updated issue successfully');
     }
-  }
+  } // load data from the graphql api server
+
 
   async loadData() {
     const {
@@ -642,7 +670,9 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     const {
       issue
     } = this.state;
-    if (issue == null) return null;
+    if (issue == null) return null; // ----- check if the "id" exists when
+    // "prev" and next links are used at the bottom ------------
+
     const {
       issue: {
         id
@@ -662,7 +692,8 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       }
 
       return null;
-    }
+    } // --- create a validtion message based on the state of the component ----
+
 
     const {
       invalidFields,
@@ -675,7 +706,8 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
         bsStyle: "danger",
         onDismiss: this.dismissValidation
       }, "Please correct invalid fields before submitting");
-    }
+    } // --------- ui presentation -----------------
+
 
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__.Panel, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__.Panel.Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__.Panel.Title, null, `Editing issue: ${id}`)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__.Panel.Body, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__.Form, {
       horizontal: true,
@@ -815,7 +847,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
- // eslint-disable-next-line react/prefer-stateless-function
+
 
 class IssueFilter extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
   constructor({
@@ -836,14 +868,16 @@ class IssueFilter extends (react__WEBPACK_IMPORTED_MODULE_0___default().Componen
     this.onChangeEffortMax = this.onChangeEffortMax.bind(this);
     this.applyFilter = this.applyFilter.bind(this);
     this.showOriginalFilter = this.showOriginalFilter.bind(this);
-  }
+  } // handles changes on status input form
+
 
   onChangeStatus(e) {
     this.setState({
       status: e.target.value,
       changed: true
     });
-  }
+  } // handles changes on effortMin input form
+
 
   onChangeEffortMin(e) {
     const effortString = e.target.value;
@@ -854,7 +888,8 @@ class IssueFilter extends (react__WEBPACK_IMPORTED_MODULE_0___default().Componen
         changed: true
       });
     }
-  }
+  } // handles changes on effortMax input form
+
 
   onChangeEffortMax(e) {
     const effortString = e.target.value;
@@ -865,7 +900,8 @@ class IssueFilter extends (react__WEBPACK_IMPORTED_MODULE_0___default().Componen
         changed: true
       });
     }
-  }
+  } // resets the filter input form's state
+
 
   showOriginalFilter() {
     const {
@@ -876,6 +912,8 @@ class IssueFilter extends (react__WEBPACK_IMPORTED_MODULE_0___default().Componen
     const params = new URLSearchParams(search);
     this.setState({
       status: params.get('status') || '',
+      effortMin: params.get('effortMin') || '',
+      effortMax: params.get('effortMax') || '',
       changed: false
     });
   }
@@ -999,8 +1037,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+ // number of pagination links in each section
 
-const SECTION_SIZE = 5;
+const SECTION_SIZE = 5; // ------- PageLink Component --------------
 
 function PageLink({
   params,
@@ -1008,7 +1047,15 @@ function PageLink({
   activePage,
   children
 }) {
-  params.set('page', page);
+  /**
+   * It represents each pagination links
+   * Props - params: Object instance from URLSearchParams
+   *                 to create query parameter.
+   *       - page: Int, the corresponding page number.
+   *       - activePage: currently active page number from URL.
+   */
+  params.set('page', page); // disable the element when the page number is zero which is invalid.
+
   if (page === 0) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().cloneElement(children, {
     disabled: true
   });
@@ -1018,11 +1065,21 @@ function PageLink({
       search: `?${params.toString()}`
     }
   }, children);
-}
+} // -------- Issue List Component ------------------
+
 
 class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
   static async fetchData(match, search, showError) {
-    const params = new URLSearchParams(search);
+    /**
+     * Static method to fetch list of issues from the graphql server.
+     * This serves an issue list page.
+     * Params - match: <Object> given by react router
+     *        - search: <String> query paramter by react router
+     *        - showError: <Func> method from ToastWrapper compoent
+     */
+    // ---- analyzing the URL using match and search props -----
+    const params = new URLSearchParams(search); // vars <Object> serves as filter for graphQL query
+
     const vars = {
       hasSelection: false,
       selectedId: 0
@@ -1032,12 +1089,13 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
         id
       }
     } = match;
-    const idInt = parseInt(id, 10);
+    const idInt = parseInt(id, 10); // if "id" is found in router parameter, update the vars obj.
 
     if (!Number.isNaN(idInt)) {
       vars.hasSelection = true;
       vars.selectedId = idInt;
-    }
+    } // analyze the query string and set it in the vars obj
+
 
     if (params.get('status')) vars.status = params.get('status');
     const effortMin = parseInt(params.get('effortMin'), 10);
@@ -1046,7 +1104,8 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     if (!Number.isNaN(effortMax)) vars.effortMax = effortMax;
     let page = parseInt(params.get('page'), 10);
     if (Number.isNaN(page)) page = 1;
-    vars.page = page;
+    vars.page = page; // ----- make an async graphQL query to the API server ------
+
     const query = `query issueList(
                      $status: StatusType,
                      $effortMin: Int,
@@ -1087,12 +1146,16 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
         pages
       },
       issue: selectedIssue
-    } = initialData;
+    } = initialData; // once  the property is destructed, it can be deleted in the global store
+
     delete _store_js__WEBPACK_IMPORTED_MODULE_8__.default.initialData;
     this.state = {
       issues,
+      // Array<Object>
       pages,
-      selectedIssue
+      // Int
+      selectedIssue // { [string]: any }
+
     };
     this.closeIssue = this.closeIssue.bind(this);
     this.deleteIssue = this.deleteIssue.bind(this);
@@ -1101,12 +1164,16 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
   componentDidMount() {
     const {
       issues
-    } = this.state;
+    } = this.state; // only fetch data if the component is navigated through
+    // browser-rendering. In server-side rendering, no need to
+    // load data since they're already pre-populated.
+
     if (issues == null) this.loadData();
   }
 
   componentDidUpdate(prevProps) {
-    // to update state on url change for filtering
+    // fetch data if there is a change in the URL paramters
+    // get the previous query string and route parameter "id"
     const {
       location: {
         search: prevSearch
@@ -1116,7 +1183,8 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
           id: prevId
         }
       }
-    } = prevProps;
+    } = prevProps; // get the current query string and route parameter "id"
+
     const {
       location: {
         search
@@ -1126,7 +1194,7 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
           id
         }
       }
-    } = this.props;
+    } = this.props; // only load data if there's a difference
 
     if (prevSearch !== search || prevId !== id) {
       this.loadData();
@@ -1135,9 +1203,17 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
 
   componentWillUnmount() {
     this.setState({});
-  }
+  } // handler function for clicking on close issue btn in IssueRow
+
 
   async closeIssue(index) {
+    /**
+     * Sends a close mutation request to the graphQL server.
+     * If the mutation is successful, show successful toast message
+     * and update the status of that particualar issue in state.issues.
+     * Params - index: Int (The index of the issue in state.issues array
+     *                      to be closed)
+     */
     const {
       issues
     } = this.state;
@@ -1167,9 +1243,16 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       } = this.props;
       showSuccess('Successfully closed the issue');
     }
-  }
+  } // handler function for clicking UNDO in Toast
+
 
   async restoreIssue(id) {
+    /**
+     * Sends a restore mutation request to the graphQL server.
+     * If the mutation is successful, show successful toast message
+     * and fetch the data again.
+     * Params - id: Int (The id of the issue to be restored)
+     */
     const query = `mutation issueRestore($id: Int!) {
       issueRestore(id: $id)
     }`;
@@ -1185,9 +1268,17 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       showSuccess(`Issue ${id} restored successfully.`);
       this.loadData();
     }
-  }
+  } // handler func for clicking delete btn in IssueRow
+
 
   async deleteIssue(index) {
+    /**
+     * Sends a mutation delete request to the graphQL server.
+     * If the mutation is successful, remove the deleted issue obj
+     * from state.issues.
+     * Params - index: Int (The index of the issue to be deleted from
+     *                      the state.issues array)
+     */
     const query = `mutation issueDelete($id: Int!){
                         issueDelete(id: $id)
                     }`;
@@ -1200,7 +1291,8 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
         search
       },
       history
-    } = this.props;
+    } = this.props; // destructuring the id field from issues[index]
+
     const {
       id
     } = issues[index];
@@ -1209,18 +1301,20 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     } = this.props;
     const data = await (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_7__.default)(query, {
       id: Number(id)
-    }, showError);
+    }, showError); // if the issue is successfully deleted in the database
 
     if (data && data.issueDelete) {
       this.setState(prevState => {
-        const newList = [...prevState.issues]; // if in selection mode
+        const newList = [...prevState.issues]; // if the row is selected and the description is displayed,
+        // drop the "id" route parameter from the URL
 
         if (pathname === `/issues/${id}`) {
           history.push({
             pathname: '/issues',
             search
           });
-        }
+        } // remove the deleted issue from the list in state.
+
 
         newList.splice(index, 1);
         return {
@@ -1229,7 +1323,8 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       });
       const {
         showSuccess
-      } = this.props; // show undo option upon issue delete success
+      } = this.props; // create a success toast with UNDO button to restore
+      // the deleted issue.
 
       const undoMessage = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, `Deleted issue ${id} successfully.`, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.Button, {
         bsStyle: "link",
@@ -1239,12 +1334,14 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     } else {
       this.loadData();
     }
-  }
+  } // fetch data for browser-rendering
+
 
   async loadData() {
     /**
-     * Fetches list of issues from the database via API call.
-     * Updates the data state on the client side.
+     * Fetches list of issues from the database via API call using
+     * the class's static method.
+     * Updates the state of the component.
      */
     const {
       location: {
@@ -1270,7 +1367,7 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     const {
       issues
     } = this.state;
-    if (issues == null) return null; // -------- pagination logics ---------------
+    if (issues == null) return null; // -------- pagination logics and creating pagination links ----------
 
     const {
       selectedIssue,
@@ -1282,13 +1379,17 @@ class IssueList extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       }
     } = this.props;
     const params = new URLSearchParams(search);
-    let page = parseInt(params.get('page'), 10);
-    if (Number.isNaN(page)) page = 1;
+    let page = parseInt(params.get('page'), 10); // if page is NaN, it signifies initial page load, where it should be
+    // set to 1.
+
+    if (Number.isNaN(page)) page = 1; // startPage calculated from page. endPage, prevSection and
+    // nextSection calculated from startPage.
+
     const startPage = Math.floor((page - 1) / SECTION_SIZE) * SECTION_SIZE + 1;
     const endPage = startPage + SECTION_SIZE - 1;
     const prevSection = startPage === 1 ? 0 : startPage - SECTION_SIZE;
     const nextSection = endPage >= pages ? 0 : startPage + SECTION_SIZE;
-    const items = [];
+    const items = []; // push each PageLink into items[] based on startPage and endPage
 
     for (let i = startPage; i <= Math.min(endPage, pages); i += 1) {
       params.set('page', i);
@@ -1506,12 +1607,12 @@ const IssueRow = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.withRouter)(({
 }) => {
   /**
    * Represents each row of issue in a IssueTable.
-   * Props: issue from Table, and location from withRouter
+   * Props: issue: {[string]: any}, search: String
+   *        closeIssue: Func(index), index: Int
+   *        deleteIssue: Func(index)
+   * Parent: IssueTable
    */
-  const selectLocation = {
-    pathname: `/issues/${issue.id}`,
-    search
-  };
+  // tooltip elements to be used in OverLay
   const closeTooltip = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Tooltip, {
     id: "close-tooltip"
   }, "Close Issue");
@@ -1520,12 +1621,13 @@ const IssueRow = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.withRouter)(({
   }, "Delete Issue");
   const editTooltip = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Tooltip, {
     id: "edit-tooltip"
-  }, "Edit Issue");
+  }, "Edit Issue"); // handles the event of click on close issue button in each row
 
   function onClose(e) {
     e.preventDefault();
     closeIssue(index);
-  }
+  } // handles the event of click on delete issue button in each row
+
 
   function onDelete(e) {
     e.preventDefault();
@@ -1562,8 +1664,13 @@ const IssueRow = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.withRouter)(({
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Glyphicon, {
     glyph: "trash"
   })))));
+  const selectedLocation = {
+    pathname: `/issues/${issue.id}`,
+    search
+  }; // each tableRow becomes a link to display description of each id
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_bootstrap__WEBPACK_IMPORTED_MODULE_2__.LinkContainer, {
-    to: selectLocation
+    to: selectedLocation
   }, tableRow);
 }); // --------- Issue Table Component -----------------
 
@@ -1574,8 +1681,11 @@ function IssueTable({
 }) {
   /**
    * Displays a list of issues in a table.
-   * Props: list of issue objects.
+   * Props: issues: Array<Objects>
+   *        closeIssue: Func
+   *        deleteIssue: Func
    */
+  // map each issue object to IssueRow
   const issueRows = issues.map((issue, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(IssueRow, {
     key: issue.id,
     issue: issue,
@@ -1785,7 +1895,8 @@ class Search extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
     super(props);
     this.loadOptions = this.loadOptions.bind(this);
     this.handleChange = this.handleChange.bind(this);
-  }
+  } // asynchronously load options from a remote server
+
 
   async loadOptions(inputValue, callback) {
     if (inputValue.length < 3) return [];
@@ -1801,7 +1912,7 @@ class Search extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
     } = this.props;
     const data = await (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_3__.default)(query, {
       search: inputValue
-    }, showError);
+    }, showError); // returns a list of options<Object> array. {label: "", value: ""}
 
     const options = () => data.issueList.issues.map(issue => ({
       label: `#${issue.id}: ${issue.title}`,
@@ -1810,7 +1921,9 @@ class Search extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
 
     callback(options());
     return undefined;
-  }
+  } // handles when the AsyncSelect value is changed
+  // (when one of the options is selected).
+
 
   handleChange(option) {
     const {
@@ -1980,6 +2093,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! isomorphic-fetch */ "isomorphic-fetch");
 /* harmony import */ var isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0__);
+ // JSON parser reviver function to parse date string as Date objects
 
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 
@@ -1990,11 +2104,14 @@ function jsonDateReviver(_, value) {
 
 async function graphQLFetch(query, variables = {}, showError = null) {
   /**
-   * Params: query string, variables if to mutate data in server.
-   * Fetches list of issue from the server.
+   * Fetches list of issues from the server.
    * Displays errors based on the result.
    * Returns the fetched issue list.
+   * Params - query: String, GraphQL query string,
+   *          variables: <Object>, GraphqQL query variables
+   *          showError: Func from Toast
    */
+  // __isBrowser__ constant formed at Webpack bundling process
   // eslint-disable-next-line no-undef
   const apiEndpoint =  false ? 0 : process.env.UI_API_ENDPOINT;
 
@@ -2112,6 +2229,10 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 
 function withToast(OriginalComponent) {
+  /**
+   * Wraps the OriginalComponent with a Toast.
+   * Holds the required logic for the Toast component
+   */
   return class ToastWrapper extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
     constructor(props) {
       super(props);

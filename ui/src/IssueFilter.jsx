@@ -10,10 +10,8 @@ import {
   Col,
 } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
-
 import 'url-search-params-polyfill';
 
-// eslint-disable-next-line react/prefer-stateless-function
 class IssueFilter extends React.Component {
   constructor({ location: { search } }) {
     super();
@@ -32,10 +30,12 @@ class IssueFilter extends React.Component {
     this.showOriginalFilter = this.showOriginalFilter.bind(this);
   }
 
+  // handles changes on status input form
   onChangeStatus(e) {
     this.setState({ status: e.target.value, changed: true });
   }
 
+  // handles changes on effortMin input form
   onChangeEffortMin(e) {
     const effortString = e.target.value;
     if (effortString.match(/^\d*$/)) {
@@ -43,6 +43,7 @@ class IssueFilter extends React.Component {
     }
   }
 
+  // handles changes on effortMax input form
   onChangeEffortMax(e) {
     const effortString = e.target.value;
     if (effortString.match(/^\d*$/)) {
@@ -50,13 +51,19 @@ class IssueFilter extends React.Component {
     }
   }
 
+  // resets the filter input form's state
   showOriginalFilter() {
     const {
       location: { search },
     } = this.props;
 
     const params = new URLSearchParams(search);
-    this.setState({ status: params.get('status') || '', changed: false });
+    this.setState({
+      status: params.get('status') || '',
+      effortMin: params.get('effortMin') || '',
+      effortMax: params.get('effortMax') || '',
+      changed: false,
+    });
   }
 
   applyFilter() {

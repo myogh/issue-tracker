@@ -25,17 +25,19 @@ export default class DateInput extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
+  // handles changes in the input box
   onChange(e) {
     if (e.target.value.match(/^[\d-]*$/)) {
       this.setState({ value: e.target.value });
     }
   }
 
-  // user clicks the input box
+  // executed when the user clicks the input box
   onFocus() {
     this.setState({ focus: true });
   }
 
+  // executed when the input box get unfocused
   onBlur(e) {
     const { value, valid: oldValid } = this.state;
     const { onValidityChange, onChange } = this.props;

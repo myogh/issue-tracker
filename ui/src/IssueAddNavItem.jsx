@@ -36,6 +36,12 @@ class IssueAddNavItem extends React.Component {
   }
 
   async handleSubmit(e) {
+    /**
+     * Once the input form is submitted, it creats a new issue object
+     * using the values from the form and sends a issueAdd mutation
+     * request to the graphQL server. Then it navigates to the corresponding
+     * issue edit page to further add info to the new added issue.
+     */
     e.preventDefault();
     this.hideModal();
     const form = document.forms.issueAdd;
@@ -62,8 +68,10 @@ class IssueAddNavItem extends React.Component {
 
   render() {
     const { showing } = this.state;
+
     return (
       <React.Fragment>
+        {/* plus icon at the nav bar */}
         <NavItem onClick={this.showModal}>
           <OverlayTrigger
             placement="left"
@@ -73,6 +81,7 @@ class IssueAddNavItem extends React.Component {
             <Glyphicon glyph="plus" />
           </OverlayTrigger>
         </NavItem>
+        {/* modal form where a new issue can be added */}
         <Modal keyboard show={showing} onHide={this.hideModal}>
           <Modal.Header closeButton>
             <Modal.Title>Create Issue</Modal.Title>
