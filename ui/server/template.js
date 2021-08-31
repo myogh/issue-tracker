@@ -1,6 +1,11 @@
 import serialize from 'serialize-javascript';
 
 export default function template(body, data) {
+  /**
+   * Creat a html template for server-side rendering.
+   * Params - body: markup string from ReactDOMServer.renderToString()
+   *          data: fetched data object from the graphql api
+   */
   return `<!DOCTYPE HTML>
 <html>
 <head>

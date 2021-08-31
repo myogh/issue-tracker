@@ -18,6 +18,8 @@ const port = process.env.UI_SERVER_PORT || 8000;
 
 const enableHMR = process.env.ENABLE_HMR === 'true';
 
+// ----- Hot module replacement in dev mode --------------
+
 if (enableHMR && process.env.NODE_ENV !== 'production') {
   console.log('Adding dev middleware, enabling HMR');
 
@@ -36,6 +38,8 @@ if (enableHMR && process.env.NODE_ENV !== 'production') {
   app.use(devMiddleware(compiler));
   app.use(hotMiddleware(compiler));
 }
+
+// ------ route handlers and middlewares --------------
 
 app.use(express.static('public'));
 
