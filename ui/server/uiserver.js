@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import path from 'path';
+import createProxyMiddleware from 'http-proxy-middleware';
 import render from './render.jsx';
 
 dotenv.config();
@@ -10,9 +10,12 @@ const app = express();
 if (!process.env.UI_API_ENDPOINT) {
   process.env.UI_API_ENDPOINT = 'http://localhost:3000/graphql';
 }
-if (!process.env.UI_SERVER_API_ENDPOINT) {
-  process.env.UI_SERVER_API_ENDPOINT = process.env.UI_API_ENDPOINT;
+
+if (!process.env.UI_AUTH_ENDPOINT) {
+  process.env.UI_AUTH_ENDPOINT = 'http://localhost:3000/auth';
 }
+
+const apiProxyTarget = process.env.API_PROXY_TARGET;
 
 const port = process.env.UI_SERVER_PORT || 8000;
 
@@ -43,8 +46,17 @@ if (enableHMR && process.env.NODE_ENV !== 'production') {
 
 app.use(express.static('public'));
 
+if (apiProxyTarget) {
+  app.use('/graphql', createProxyMiddleware({
+    target: process.env.API_PROXY_TARGET,
+  }));
+}
+
 app.get('/env.js', (_, res) => {
-  const env = { UI_API_ENDPOINT: process.env.UI_API_ENDPOINT };
+  const env = {
+    UI_API_ENDPOINT: process.env.UI_API_ENDPOINT,
+    UI_AUTH_ENDPOINT: process.env.UI_AUTH_ENDPOINT,
+  };
   res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
 

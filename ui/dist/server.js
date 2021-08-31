@@ -2529,6 +2529,17 @@ module.exports = require("express");
 
 /***/ }),
 
+/***/ "http-proxy-middleware":
+/*!****************************************!*\
+  !*** external "http-proxy-middleware" ***!
+  \****************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("http-proxy-middleware");
+
+/***/ }),
+
 /***/ "isomorphic-fetch":
 /*!***********************************!*\
   !*** external "isomorphic-fetch" ***!
@@ -2774,8 +2785,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var dotenv__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(dotenv__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! express */ "express");
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(express__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! path */ "path");
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var http_proxy_middleware__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! http-proxy-middleware */ "http-proxy-middleware");
+/* harmony import */ var http_proxy_middleware__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(http_proxy_middleware__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _render_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./render.jsx */ "./server/render.jsx");
 
 
@@ -2788,10 +2799,7 @@ if (!process.env.UI_API_ENDPOINT) {
   process.env.UI_API_ENDPOINT = 'http://localhost:3000/graphql';
 }
 
-if (!process.env.UI_SERVER_API_ENDPOINT) {
-  process.env.UI_SERVER_API_ENDPOINT = process.env.UI_API_ENDPOINT;
-}
-
+const apiProxyTarget = process.env.API_PROXY_TARGET;
 const port = process.env.UI_SERVER_PORT || 8000;
 const enableHMR = process.env.ENABLE_HMR === 'true'; // ----- Hot module replacement in dev mode --------------
 
@@ -2819,6 +2827,13 @@ if (enableHMR && "development" !== 'production') {
 
 
 app.use(express__WEBPACK_IMPORTED_MODULE_1___default().static('public'));
+
+if (apiProxyTarget) {
+  app.use('/graphql', http_proxy_middleware__WEBPACK_IMPORTED_MODULE_2___default()({
+    target: process.env.API_PROXY_TARGET
+  }));
+}
+
 app.get('/env.js', (_, res) => {
   const env = {
     UI_API_ENDPOINT: process.env.UI_API_ENDPOINT
