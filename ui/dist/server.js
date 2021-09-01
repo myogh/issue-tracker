@@ -2001,7 +2001,8 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
     this.state = {
       user: {
         signedIn: false,
-        username: ''
+        username: '',
+        pswd: ''
       },
       showingModal: false
     };
@@ -2009,6 +2010,8 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
     this.hideModal = this.hideModal.bind(this);
     this.signIn = this.signIn.bind(this);
     this.signOut = this.signOut.bind(this);
+    this.validateUsername = this.validateUsername.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   showModal() {
@@ -2024,13 +2027,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
   }
 
   signIn() {
-    this.hideModal();
-    this.setState({
-      user: {
-        signedIn: true,
-        username: 'User1'
-      }
-    });
+    this.hideModal(); // things left to do
   }
 
   signOut() {
@@ -2039,6 +2036,33 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
         signedIn: false,
         username: ''
       }
+    }); // things left to do
+  }
+
+  validateUsername() {
+    const {
+      user: {
+        username
+      }
+    } = this.state;
+    const len = username.length;
+    if (len > 4) return 'success';
+    if (len > 0) return 'error';
+    return null;
+  }
+
+  handleChange(e) {
+    const {
+      name,
+      value
+    } = e.target;
+    this.setState(prevState => {
+      const user = { ...prevState.user,
+        [name]: value
+      };
+      return {
+        user
+      };
     });
   }
 
@@ -2056,6 +2080,12 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
       }, "Sign out")));
     }
 
+    let signInDisable = true;
+
+    if (user.username && user.pswd) {
+      signInDisable = false;
+    }
+
     const {
       showingModal
     } = this.state;
@@ -2068,11 +2098,31 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
       bsSize: "sm"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Header, {
       closeButton: true
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Title, null, "Sign in")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Body, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Title, null, "Sign in")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Body, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Form, {
+      name: "signIn",
+      onSubmit: this.signIn
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.FormGroup, {
+      controlId: "formUsername",
+      validationState: this.validateUsername()
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.ControlLabel, null, "Username"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.FormControl, {
+      type: "text",
+      name: "username",
+      value: user.username,
+      onChange: this.handleChange
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.FormControl.Feedback, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.HelpBlock, null, "More than three characters.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.FormGroup, {
+      controlId: "formPassword"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.ControlLabel, null, "Password"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.FormControl, {
+      type: "password",
+      name: "pswd",
+      value: user.pswd,
+      onChange: this.handleChange
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.FormControl.Feedback, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.HelpBlock, null, "Password: 12345")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Button, {
       block: true,
+      type: "submit",
       bsStyle: "primary",
-      onClick: this.signIn
-    }, "Sign In")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Footer, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Button, {
+      onClick: this.signIn,
+      disabled: signInDisable
+    }, "Sign In"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal.Footer, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Button, {
       bsStyle: "link",
       onClick: this.hideModal
     }, "Cancel"))));
@@ -2799,6 +2849,10 @@ if (!process.env.UI_API_ENDPOINT) {
   process.env.UI_API_ENDPOINT = 'http://localhost:3000/graphql';
 }
 
+if (!process.env.UI_AUTH_ENDPOINT) {
+  process.env.UI_AUTH_ENDPOINT = 'http://localhost:3000/auth';
+}
+
 const apiProxyTarget = process.env.API_PROXY_TARGET;
 const port = process.env.UI_SERVER_PORT || 8000;
 const enableHMR = process.env.ENABLE_HMR === 'true'; // ----- Hot module replacement in dev mode --------------
@@ -2836,7 +2890,8 @@ if (apiProxyTarget) {
 
 app.get('/env.js', (_, res) => {
   const env = {
-    UI_API_ENDPOINT: process.env.UI_API_ENDPOINT
+    UI_API_ENDPOINT: process.env.UI_API_ENDPOINT,
+    UI_AUTH_ENDPOINT: process.env.UI_AUTH_ENDPOINT
   };
   res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
