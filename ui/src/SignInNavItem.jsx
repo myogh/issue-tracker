@@ -11,8 +11,9 @@ import {
   NavDropdown,
   NavItem,
 } from 'react-bootstrap';
+import withToast from './withToast.jsx';
 
-export default class SignInNavItem extends React.Component {
+class SignInNavItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,18 +38,28 @@ export default class SignInNavItem extends React.Component {
 
   signIn() {
     this.hideModal();
+    const { user: { pswd } } = this.state;
+    const { showSuccess, showError } = this.props;
+    if (pswd === '12345') {
+      this.setState((prevState) => {
+        const user = { ...prevState.user, signedIn: true };
+        return { user };
+      });
+      showSuccess('Successfully logged in.');
+    } else {
+      showError('Login failed.');
+    }
     // things left to do
   }
 
   signOut() {
-    this.setState({ user: { signedIn: false, username: '' } });
-    // things left to do
+    this.setState({ user: { signedIn: false, username: '', pswd: '' } });
   }
 
   validateUsername() {
     const { user: { username } } = this.state;
     const len = username.length;
-    if (len > 4) return 'success';
+    if (len > 3) return 'success';
     if (len > 0) return 'error';
     return null;
   }
@@ -144,3 +155,5 @@ export default class SignInNavItem extends React.Component {
     );
   }
 }
+
+export default withToast(SignInNavItem);

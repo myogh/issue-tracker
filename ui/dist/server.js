@@ -1987,12 +1987,15 @@ class Search extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ SignInNavItem)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
 /* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
+
+
 
 
 class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
@@ -2027,16 +2030,41 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
   }
 
   signIn() {
-    this.hideModal(); // things left to do
+    this.hideModal();
+    const {
+      user: {
+        pswd
+      }
+    } = this.state;
+    const {
+      showSuccess,
+      showError
+    } = this.props;
+
+    if (pswd === '12345') {
+      this.setState(prevState => {
+        const user = { ...prevState.user,
+          signedIn: true
+        };
+        return {
+          user
+        };
+      });
+      showSuccess('Successfully logged in.');
+    } else {
+      showError('Login failed.');
+    } // things left to do
+
   }
 
   signOut() {
     this.setState({
       user: {
         signedIn: false,
-        username: ''
+        username: '',
+        pswd: ''
       }
-    }); // things left to do
+    });
   }
 
   validateUsername() {
@@ -2046,7 +2074,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
       }
     } = this.state;
     const len = username.length;
-    if (len > 4) return 'success';
+    if (len > 3) return 'success';
     if (len > 0) return 'error';
     return null;
   }
@@ -2129,6 +2157,8 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
   }
 
 }
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_2__.default)(SignInNavItem));
 
 /***/ }),
 
