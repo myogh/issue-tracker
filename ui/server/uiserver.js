@@ -50,6 +50,9 @@ if (apiProxyTarget) {
   app.use('/graphql', createProxyMiddleware({
     target: process.env.API_PROXY_TARGET,
   }));
+  app.use('/auth', createProxyMiddleware({
+    target: process.env.API_PROXY_TARGET,
+  }));
 }
 
 app.get('/env.js', (_, res) => {

@@ -6,13 +6,12 @@ const routes = Router();
 routes.use(express.json());
 
 routes.post('/signin', async (req, res) => {
-  const { usrname, pswd } = req.body;
+  const { username, pswd } = req.body;
   // check for password
-  if (pswd === '12345') {
+  if (pswd === 'superman') {
     const credentials = {
       signedIn: true,
-      username: usrname,
-      password: pswd,
+      username,
     };
     res.json(credentials);
   } else {

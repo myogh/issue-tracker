@@ -1,4 +1,5 @@
 import React from 'react';
+import fetch from 'isomorphic-fetch';
 import {
   Button,
   ControlLabel,
@@ -19,6 +20,7 @@ class SignInNavItem extends React.Component {
     this.state = {
       user: { signedIn: false, username: '', pswd: '' },
       showingModal: false,
+      loginErrMsg: '',
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
@@ -36,20 +38,35 @@ class SignInNavItem extends React.Component {
     this.setState({ showingModal: false });
   }
 
-  signIn() {
-    this.hideModal();
-    const { user: { pswd } } = this.state;
-    const { showSuccess, showError } = this.props;
-    if (pswd === '12345') {
+  async signIn(e) {
+    e.preventDefault();
+    const { user: { username, pswd } } = this.state;
+    const { showSuccess } = this.props;
+
+    const authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
+
+    try {
+      const response = await fetch(`${authEndpoint}/signin`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({ username, pswd }),
+      });
+
+      const body = await response.text();
+      const credentials = JSON.parse(body);
+
       this.setState((prevState) => {
-        const user = { ...prevState.user, signedIn: true };
+        const user = { ...prevState.user, ...credentials };
         return { user };
       });
-      showSuccess('Successfully logged in.');
-    } else {
-      showError('Login failed.');
+
+      this.hideModal();
+      showSuccess('Login Successfull.');
+    } catch (error) {
+      this.setState({ loginErrMsg: 'Incorrect password!' });
     }
-    // things left to do
   }
 
   signOut() {
@@ -68,7 +85,7 @@ class SignInNavItem extends React.Component {
     const { name, value } = e.target;
     this.setState((prevState) => {
       const user = { ...prevState.user, [name]: value };
-      return { user };
+      return { user, loginErrMsg: '' };
     });
   }
 
@@ -86,10 +103,12 @@ class SignInNavItem extends React.Component {
 
     let signInDisable = true;
     if (user.username && user.pswd) {
-      signInDisable = false;
+      if (user.username.length > 3) {
+        signInDisable = false;
+      }
     }
 
-    const { showingModal } = this.state;
+    const { showingModal, loginErrMsg } = this.state;
 
     return (
       <>
@@ -132,7 +151,8 @@ class SignInNavItem extends React.Component {
                 />
                 <FormControl.Feedback />
                 <HelpBlock>
-                  Password: 12345
+                  Password: superman
+                  <div style={{ color: '#f26b41' }}>{loginErrMsg}</div>
                 </HelpBlock>
               </FormGroup>
               {/* ------- Sign-in block button -------------- */}
