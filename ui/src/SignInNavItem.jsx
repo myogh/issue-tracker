@@ -87,7 +87,11 @@ class SignInNavItem extends React.Component {
     }
   }
 
-  signOut() {
+  async signOut() {
+    const authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
+    await fetch(`${authEndpoint}/signout`, {
+      method: 'POST',
+    });
     this.setState({ user: { signedIn: false, username: '', pswd: '' } });
   }
 
@@ -105,7 +109,7 @@ class SignInNavItem extends React.Component {
     const { name, value } = e.target;
     this.setState((prevState) => {
       const user = { ...prevState.user, [name]: value };
-      return { ...prevState, user };
+      return { user };
     });
   }
 

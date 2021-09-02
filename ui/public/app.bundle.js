@@ -2669,15 +2669,42 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
     }()
   }, {
     key: "signOut",
-    value: function signOut() {
-      this.setState({
-        user: {
-          signedIn: false,
-          username: '',
-          pswd: ''
-        }
-      });
-    }
+    value: function () {
+      var _signOut = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        var authEndpoint;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
+                _context3.next = 3;
+                return isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()("".concat(authEndpoint, "/signout"), {
+                  method: 'POST'
+                });
+
+              case 3:
+                this.setState({
+                  user: {
+                    signedIn: false,
+                    username: '',
+                    pswd: ''
+                  }
+                });
+
+              case 4:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function signOut() {
+        return _signOut.apply(this, arguments);
+      }
+
+      return signOut;
+    }()
   }, {
     key: "validateUsername",
     value: function validateUsername() {
@@ -2700,9 +2727,9 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
       this.setState(function (prevState) {
         var user = _objectSpread(_objectSpread({}, prevState.user), {}, _defineProperty({}, name, value));
 
-        return _objectSpread(_objectSpread({}, prevState), {}, {
+        return {
           user: user
-        });
+        };
       });
     }
   }, {

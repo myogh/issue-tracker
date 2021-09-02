@@ -51,6 +51,11 @@ routes.post('/signin', async (req, res) => {
   }
 });
 
+routes.post('/signout', (req, res) => {
+  res.clearCookie('jwt', { httpOnly: true });
+  res.json({ status: 'ok' });
+});
+
 routes.post('/user', (req, res) => {
   res.json(getUser(req));
 });

@@ -2099,7 +2099,11 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
     }
   }
 
-  signOut() {
+  async signOut() {
+    const authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
+    await isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()(`${authEndpoint}/signout`, {
+      method: 'POST'
+    });
     this.setState({
       user: {
         signedIn: false,
@@ -2134,7 +2138,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
       const user = { ...prevState.user,
         [name]: value
       };
-      return { ...prevState,
+      return {
         user
       };
     });
