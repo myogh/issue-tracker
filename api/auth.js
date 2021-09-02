@@ -1,3 +1,4 @@
+const { AuthenticationError } = require('apollo-server-express');
 const Router = require('express');
 const express = require('express');
 const jwt = require('jsonwebtoken');
@@ -18,6 +19,13 @@ const routes = Router();
 routes.use(express.json());
 
 function getUser(req) {
+  /**
+   * * Get authentication credentials from the Json Web Token which
+   * * was included in the client's request as a cookie.
+   * Params - req: Express.Resquest
+   * Returns an object of user status
+   * { signedIn: boolean, username: String }
+   */
   const token = req.cookies.jwt;
   if (!token) return { signedIn: false };
 
@@ -27,6 +35,23 @@ function getUser(req) {
   } catch (error) {
     return { signedIn: false };
   }
+}
+
+function mustBeSignedIn(resolver) {
+  /**
+   * Wrapper function for the resolvers.
+   * Param - resolver: Func
+   * Returns: a resolver Func only if the user property exists
+   * in the context object.
+   * A resolver function is originally given three arguments by
+   * GraphQL which are (root, args, context).
+   */
+  return (root, args, { user }) => {
+    if (!user || !user.signedIn) {
+      throw new AuthenticationError('You must be signed in');
+    }
+    return resolver(root, args, { user });
+  };
 }
 
 routes.post('/signin', async (req, res) => {
@@ -60,4 +85,4 @@ routes.post('/user', (req, res) => {
   res.json(getUser(req));
 });
 
-module.exports = { routes };
+module.exports = { routes, getUser, mustBeSignedIn };

@@ -1,5 +1,6 @@
 const { UserInputError } = require('apollo-server-express');
 const { getDb, getNextSequence } = require('./db.js');
+const { mustBeSignedIn } = require('./auth.js');
 
 const PAGE_SIZE = 10;
 // ----------- resolver func for isseList field ------------
@@ -153,10 +154,10 @@ async function restore(_, { id }) {
 
 module.exports = {
   list,
-  add,
+  add: mustBeSignedIn(add),
   get,
-  update,
-  remove,
+  update: mustBeSignedIn(update),
+  remove: mustBeSignedIn(remove),
   counts,
-  restore,
+  restore: mustBeSignedIn(restore),
 };
