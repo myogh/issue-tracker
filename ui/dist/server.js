@@ -2021,6 +2021,29 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidMount() {
+    this.loadData();
+  }
+
+  async loadData() {
+    const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
+    const response = await isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()(`${apiEndpoint}/user`, {
+      method: 'POST'
+    });
+    const body = await response.text();
+    const result = JSON.parse(body);
+    const {
+      signedIn
+    } = result;
+    const username = result.username ? result.username : '';
+    this.setState(prevState => ({ ...prevState,
+      user: { ...prevState.user,
+        signedIn,
+        username
+      }
+    }));
+  }
+
   showModal() {
     this.setState({
       showingModal: true
@@ -2068,7 +2091,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
         };
       });
       this.hideModal();
-      showSuccess('Login Successfull.');
+      showSuccess('Login Successful.');
     } catch (error) {
       this.setState({
         loginErrMsg: 'Incorrect password!'
@@ -2092,9 +2115,13 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
         username
       }
     } = this.state;
-    const len = username.length;
-    if (len > 3) return 'success';
-    if (len > 0) return 'error';
+
+    if (username) {
+      const len = username.length;
+      if (len > 3) return 'success';
+      if (len > 0) return 'error';
+    }
+
     return null;
   }
 
@@ -2107,9 +2134,8 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
       const user = { ...prevState.user,
         [name]: value
       };
-      return {
-        user,
-        loginErrMsg: ''
+      return { ...prevState,
+        user
       };
     });
   }

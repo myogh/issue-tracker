@@ -2533,6 +2533,59 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
   }
 
   _createClass(SignInNavItem, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadData();
+    }
+  }, {
+    key: "loadData",
+    value: function () {
+      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var apiEndpoint, response, body, result, signedIn, username;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
+                _context.next = 3;
+                return isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()("".concat(apiEndpoint, "/user"), {
+                  method: 'POST'
+                });
+
+              case 3:
+                response = _context.sent;
+                _context.next = 6;
+                return response.text();
+
+              case 6:
+                body = _context.sent;
+                result = JSON.parse(body);
+                signedIn = result.signedIn;
+                username = result.username ? result.username : '';
+                this.setState(function (prevState) {
+                  return _objectSpread(_objectSpread({}, prevState), {}, {
+                    user: _objectSpread(_objectSpread({}, prevState.user), {}, {
+                      signedIn: signedIn,
+                      username: username
+                    })
+                  });
+                });
+
+              case 11:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function loadData() {
+        return _loadData.apply(this, arguments);
+      }
+
+      return loadData;
+    }()
+  }, {
     key: "showModal",
     value: function showModal() {
       this.setState({
@@ -2549,19 +2602,19 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "signIn",
     value: function () {
-      var _signIn = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+      var _signIn = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
         var _this$state$user, username, pswd, showSuccess, authEndpoint, response, body, credentials;
 
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 e.preventDefault();
                 _this$state$user = this.state.user, username = _this$state$user.username, pswd = _this$state$user.pswd;
                 showSuccess = this.props.showSuccess;
                 authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
-                _context.prev = 4;
-                _context.next = 7;
+                _context2.prev = 4;
+                _context2.next = 7;
                 return isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()("".concat(authEndpoint, "/signin"), {
                   method: 'POST',
                   headers: {
@@ -2574,12 +2627,12 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
                 });
 
               case 7:
-                response = _context.sent;
-                _context.next = 10;
+                response = _context2.sent;
+                _context2.next = 10;
                 return response.text();
 
               case 10:
-                body = _context.sent;
+                body = _context2.sent;
                 credentials = JSON.parse(body);
                 this.setState(function (prevState) {
                   var user = _objectSpread(_objectSpread({}, prevState.user), credentials);
@@ -2589,23 +2642,23 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
                   };
                 });
                 this.hideModal();
-                showSuccess('Login Successfull.');
-                _context.next = 20;
+                showSuccess('Login Successful.');
+                _context2.next = 20;
                 break;
 
               case 17:
-                _context.prev = 17;
-                _context.t0 = _context["catch"](4);
+                _context2.prev = 17;
+                _context2.t0 = _context2["catch"](4);
                 this.setState({
                   loginErrMsg: 'Incorrect password!'
                 });
 
               case 20:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, this, [[4, 17]]);
+        }, _callee2, this, [[4, 17]]);
       }));
 
       function signIn(_x) {
@@ -2629,9 +2682,13 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
     key: "validateUsername",
     value: function validateUsername() {
       var username = this.state.user.username;
-      var len = username.length;
-      if (len > 3) return 'success';
-      if (len > 0) return 'error';
+
+      if (username) {
+        var len = username.length;
+        if (len > 3) return 'success';
+        if (len > 0) return 'error';
+      }
+
       return null;
     }
   }, {
@@ -2643,10 +2700,9 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
       this.setState(function (prevState) {
         var user = _objectSpread(_objectSpread({}, prevState.user), {}, _defineProperty({}, name, value));
 
-        return {
-          user: user,
-          loginErrMsg: ''
-        };
+        return _objectSpread(_objectSpread({}, prevState), {}, {
+          user: user
+        });
       });
     }
   }, {

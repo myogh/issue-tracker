@@ -30,6 +30,24 @@ class SignInNavItem extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidMount() {
+    this.loadData();
+  }
+
+  async loadData() {
+    const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
+    const response = await fetch(`${apiEndpoint}/user`, {
+      method: 'POST',
+    });
+    const body = await response.text();
+    const result = JSON.parse(body);
+    const { signedIn } = result;
+    const username = result.username ? result.username : '';
+    this.setState(prevState => (
+      { ...prevState, user: { ...prevState.user, signedIn, username } }
+    ));
+  }
+
   showModal() {
     this.setState({ showingModal: true });
   }
@@ -63,7 +81,7 @@ class SignInNavItem extends React.Component {
       });
 
       this.hideModal();
-      showSuccess('Login Successfull.');
+      showSuccess('Login Successful.');
     } catch (error) {
       this.setState({ loginErrMsg: 'Incorrect password!' });
     }
@@ -75,9 +93,11 @@ class SignInNavItem extends React.Component {
 
   validateUsername() {
     const { user: { username } } = this.state;
-    const len = username.length;
-    if (len > 3) return 'success';
-    if (len > 0) return 'error';
+    if (username) {
+      const len = username.length;
+      if (len > 3) return 'success';
+      if (len > 0) return 'error';
+    }
     return null;
   }
 
@@ -85,7 +105,7 @@ class SignInNavItem extends React.Component {
     const { name, value } = e.target;
     this.setState((prevState) => {
       const user = { ...prevState.user, [name]: value };
-      return { user, loginErrMsg: '' };
+      return { ...prevState, user };
     });
   }
 
