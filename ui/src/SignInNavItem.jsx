@@ -18,7 +18,7 @@ class SignInNavItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: { signedIn: false, username: '', pswd: '' },
+      pswd: '',
       showingModal: false,
       loginErrMsg: '',
     };
@@ -28,24 +28,6 @@ class SignInNavItem extends React.Component {
     this.signOut = this.signOut.bind(this);
     this.validateUsername = this.validateUsername.bind(this);
     this.handleChange = this.handleChange.bind(this);
-  }
-
-  componentDidMount() {
-    this.loadData();
-  }
-
-  async loadData() {
-    const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
-    const response = await fetch(`${apiEndpoint}/user`, {
-      method: 'POST',
-    });
-    const body = await response.text();
-    const result = JSON.parse(body);
-    const { signedIn } = result;
-    const username = result.username ? result.username : '';
-    this.setState(prevState => (
-      { ...prevState, user: { ...prevState.user, signedIn, username } }
-    ));
   }
 
   showModal() {
@@ -58,7 +40,8 @@ class SignInNavItem extends React.Component {
 
   async signIn(e) {
     e.preventDefault();
-    const { user: { username, pswd } } = this.state;
+    const { pswd } = this.state;
+    const { user: { username }, onUserChange } = this.props;
     const { showSuccess } = this.props;
 
     const authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
@@ -75,10 +58,7 @@ class SignInNavItem extends React.Component {
       const body = await response.text();
       const credentials = JSON.parse(body);
 
-      this.setState((prevState) => {
-        const user = { ...prevState.user, ...credentials };
-        return { user };
-      });
+      onUserChange({ ...credentials });
 
       this.hideModal();
       showSuccess('Login Successful.');
@@ -88,15 +68,17 @@ class SignInNavItem extends React.Component {
   }
 
   async signOut() {
+    const { onUserChange } = this.props;
     const authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
     await fetch(`${authEndpoint}/signout`, {
       method: 'POST',
     });
-    this.setState({ user: { signedIn: false, username: '', pswd: '' } });
+
+    onUserChange({ username: '', signedIn: false });
   }
 
   validateUsername() {
-    const { user: { username } } = this.state;
+    const { user: { username } } = this.props;
     if (username) {
       const len = username.length;
       if (len > 3) return 'success';
@@ -106,15 +88,17 @@ class SignInNavItem extends React.Component {
   }
 
   handleChange(e) {
-    const { name, value } = e.target;
-    this.setState((prevState) => {
-      const user = { ...prevState.user, [name]: value };
-      return { user };
-    });
+    const { onUserChange } = this.props;
+    if (e.target.name === 'username') {
+      onUserChange({ username: e.target.value, signedIn: false });
+    } else {
+      this.setState({ pswd: e.target.value });
+    }
   }
 
   render() {
-    const { user } = this.state;
+    const { user } = this.props;
+    const { pswd } = this.state;
     if (user.signedIn) {
       return (
         <>
@@ -126,7 +110,7 @@ class SignInNavItem extends React.Component {
     }
 
     let signInDisable = true;
-    if (user.username && user.pswd) {
+    if (user.username && pswd) {
       if (user.username.length > 3) {
         signInDisable = false;
       }
@@ -170,7 +154,7 @@ class SignInNavItem extends React.Component {
                 <FormControl
                   type="password"
                   name="pswd"
-                  value={user.pswd}
+                  value={pswd}
                   onChange={this.handleChange}
                 />
                 <FormControl.Feedback />

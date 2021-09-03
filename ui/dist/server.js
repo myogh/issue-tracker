@@ -441,7 +441,13 @@ class IssueAddNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Comp
     const {
       showing
     } = this.state;
+    const {
+      user: {
+        signedIn
+      }
+    } = this.props;
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.NavItem, {
+      disabled: !signedIn,
       onClick: this.showModal
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.OverlayTrigger, {
       placement: "left",
@@ -1778,7 +1784,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function NavBar() {
+function NavBar({
+  user,
+  onUserChange
+}) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Navbar, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Navbar.Header, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Navbar.Brand, null, "Issue Tracker")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Nav, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_bootstrap__WEBPACK_IMPORTED_MODULE_2__.LinkContainer, {
     exact: true,
     to: "/"
@@ -1791,7 +1800,12 @@ function NavBar() {
     md: 5
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Navbar.Form, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Search_jsx__WEBPACK_IMPORTED_MODULE_4__.default, null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Nav, {
     pullRight: true
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_IssueAddNavItem_jsx__WEBPACK_IMPORTED_MODULE_3__.default, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_SignInNavItem_jsx__WEBPACK_IMPORTED_MODULE_5__.default, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.NavDropdown, {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_IssueAddNavItem_jsx__WEBPACK_IMPORTED_MODULE_3__.default, {
+    user: user
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_SignInNavItem_jsx__WEBPACK_IMPORTED_MODULE_5__.default, {
+    user: user,
+    onUserChange: onUserChange
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.NavDropdown, {
     id: "user-dropdown",
     title: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Glyphicon, {
       glyph: "option-vertical"
@@ -1920,10 +1934,55 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function Page() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NavBar_jsx__WEBPACK_IMPORTED_MODULE_3__.default, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Grid, {
-    fluid: true
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Contents_jsx__WEBPACK_IMPORTED_MODULE_2__.default, null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Footer_jsx__WEBPACK_IMPORTED_MODULE_4__.default, null));
+class Page extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
+  constructor() {
+    super();
+    this.state = {
+      user: {
+        signedIn: false,
+        username: ''
+      }
+    };
+    this.onUserChange = this.onUserChange.bind(this);
+  }
+
+  async componentDidMount() {
+    const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
+    const response = await fetch(`${apiEndpoint}/user`, {
+      method: 'POST'
+    });
+    const body = await response.text();
+    const result = JSON.parse(body);
+    const {
+      signedIn
+    } = result;
+    const username = result.username ? result.username : '';
+    this.setState({
+      user: {
+        signedIn,
+        username
+      }
+    });
+  }
+
+  onUserChange(user) {
+    this.setState({
+      user
+    });
+  }
+
+  render() {
+    const {
+      user
+    } = this.state;
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NavBar_jsx__WEBPACK_IMPORTED_MODULE_3__.default, {
+      user: user,
+      onUserChange: this.onUserChange
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Grid, {
+      fluid: true
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Contents_jsx__WEBPACK_IMPORTED_MODULE_2__.default, null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Footer_jsx__WEBPACK_IMPORTED_MODULE_4__.default, null));
+  }
+
 }
 
 /***/ }),
@@ -2043,11 +2102,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
   constructor(props) {
     super(props);
     this.state = {
-      user: {
-        signedIn: false,
-        username: '',
-        pswd: ''
-      },
+      pswd: '',
       showingModal: false,
       loginErrMsg: ''
     };
@@ -2057,29 +2112,6 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
     this.signOut = this.signOut.bind(this);
     this.validateUsername = this.validateUsername.bind(this);
     this.handleChange = this.handleChange.bind(this);
-  }
-
-  componentDidMount() {
-    this.loadData();
-  }
-
-  async loadData() {
-    const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
-    const response = await isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()(`${apiEndpoint}/user`, {
-      method: 'POST'
-    });
-    const body = await response.text();
-    const result = JSON.parse(body);
-    const {
-      signedIn
-    } = result;
-    const username = result.username ? result.username : '';
-    this.setState(prevState => ({ ...prevState,
-      user: { ...prevState.user,
-        signedIn,
-        username
-      }
-    }));
   }
 
   showModal() {
@@ -2097,11 +2129,14 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
   async signIn(e) {
     e.preventDefault();
     const {
-      user: {
-        username,
-        pswd
-      }
+      pswd
     } = this.state;
+    const {
+      user: {
+        username
+      },
+      onUserChange
+    } = this.props;
     const {
       showSuccess
     } = this.props;
@@ -2120,13 +2155,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
       });
       const body = await response.text();
       const credentials = JSON.parse(body);
-      this.setState(prevState => {
-        const user = { ...prevState.user,
-          ...credentials
-        };
-        return {
-          user
-        };
+      onUserChange({ ...credentials
       });
       this.hideModal();
       showSuccess('Login Successful.');
@@ -2138,16 +2167,16 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
   }
 
   async signOut() {
+    const {
+      onUserChange
+    } = this.props;
     const authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
     await isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()(`${authEndpoint}/signout`, {
       method: 'POST'
     });
-    this.setState({
-      user: {
-        signedIn: false,
-        username: '',
-        pswd: ''
-      }
+    onUserChange({
+      username: '',
+      signedIn: false
     });
   }
 
@@ -2156,7 +2185,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
       user: {
         username
       }
-    } = this.state;
+    } = this.props;
 
     if (username) {
       const len = username.length;
@@ -2169,22 +2198,27 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
 
   handleChange(e) {
     const {
-      name,
-      value
-    } = e.target;
-    this.setState(prevState => {
-      const user = { ...prevState.user,
-        [name]: value
-      };
-      return {
-        user
-      };
-    });
+      onUserChange
+    } = this.props;
+
+    if (e.target.name === 'username') {
+      onUserChange({
+        username: e.target.value,
+        signedIn: false
+      });
+    } else {
+      this.setState({
+        pswd: e.target.value
+      });
+    }
   }
 
   render() {
     const {
       user
+    } = this.props;
+    const {
+      pswd
     } = this.state;
 
     if (user.signedIn) {
@@ -2198,7 +2232,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
 
     let signInDisable = true;
 
-    if (user.username && user.pswd) {
+    if (user.username && pswd) {
       if (user.username.length > 3) {
         signInDisable = false;
       }
@@ -2233,7 +2267,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.ControlLabel, null, "Password"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.FormControl, {
       type: "password",
       name: "pswd",
-      value: user.pswd,
+      value: pswd,
       onChange: this.handleChange
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.FormControl.Feedback, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.HelpBlock, null, "Password: superman", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       style: {

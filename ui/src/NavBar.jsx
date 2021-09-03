@@ -13,7 +13,7 @@ import IssueAddNavItem from './IssueAddNavItem.jsx';
 import Search from './Search.jsx';
 import SignInNavItem from './SignInNavItem.jsx';
 
-export default function NavBar() {
+export default function NavBar({ user, onUserChange }) {
   return (
     <Navbar>
       <Navbar.Header>
@@ -36,8 +36,8 @@ export default function NavBar() {
         </Navbar.Form>
       </Col>
       <Nav pullRight>
-        <IssueAddNavItem />
-        <SignInNavItem />
+        <IssueAddNavItem user={user} />
+        <SignInNavItem user={user} onUserChange={onUserChange} />
         <NavDropdown
           id="user-dropdown"
           title={<Glyphicon glyph="option-vertical" />}
