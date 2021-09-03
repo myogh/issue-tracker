@@ -18,6 +18,7 @@ import DateInput from './DateInput.jsx';
 import TextInput from './TextInput.jsx';
 import store from './store.js';
 import withToast from './withToast.jsx';
+import UserContext from './UserContext.js';
 
 class IssueEdit extends React.Component {
   static async fetchData(match, search, showError) {
@@ -155,6 +156,7 @@ class IssueEdit extends React.Component {
 
   render() {
     const { issue } = this.state;
+    const user = this.context;
     if (issue == null) return null;
 
     // ----- check if the "id" exists when
@@ -316,7 +318,11 @@ class IssueEdit extends React.Component {
             <FormGroup>
               <Col smOffset={3} sm={6}>
                 <ButtonToolbar>
-                  <Button bsStyle="primary" type="submit">
+                  <Button
+                    disabled={!user.signedIn}
+                    bsStyle="primary"
+                    type="submit"
+                  >
                     Submit
                   </Button>
                   <LinkContainer to="/issues">
@@ -346,5 +352,6 @@ class IssueEdit extends React.Component {
 
 const IssueEditWithToast = withToast(IssueEdit);
 IssueEditWithToast.fetchData = IssueEdit.fetchData;
+IssueEditWithToast.contextType = UserContext;
 
 export default IssueEditWithToast;

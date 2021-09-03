@@ -5,6 +5,7 @@ import {
 import Contents from './Contents.jsx';
 import NavBar from './NavBar.jsx';
 import Footer from './Footer.jsx';
+import UserContext from './UserContext.js';
 
 export default class Page extends React.Component {
   constructor() {
@@ -37,7 +38,9 @@ export default class Page extends React.Component {
       <div>
         <NavBar user={user} onUserChange={this.onUserChange} />
         <Grid fluid>
-          <Contents />
+          <UserContext.Provider value={user}>
+            <Contents />
+          </UserContext.Provider>
         </Grid>
         <Footer />
       </div>

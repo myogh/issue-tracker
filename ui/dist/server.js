@@ -537,6 +537,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _TextInput_jsx__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./TextInput.jsx */ "./src/TextInput.jsx");
 /* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
 /* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
+/* harmony import */ var _UserContext_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./UserContext.js */ "./src/UserContext.js");
+
 
 
 
@@ -725,6 +727,7 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
     const {
       issue
     } = this.state;
+    const user = this.context;
     if (issue == null) return null; // ----- check if the "id" exists when
     // "prev" and next links are used at the bottom ------------
 
@@ -856,6 +859,7 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
       smOffset: 3,
       sm: 6
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__.ButtonToolbar, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__.Button, {
+      disabled: !user.signedIn,
       bsStyle: "primary",
       type: "submit"
     }, "Submit"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_bootstrap__WEBPACK_IMPORTED_MODULE_2__.LinkContainer, {
@@ -876,6 +880,7 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
 
 const IssueEditWithToast = (0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_9__.default)(IssueEdit);
 IssueEditWithToast.fetchData = IssueEdit.fetchData;
+IssueEditWithToast.contextType = _UserContext_js__WEBPACK_IMPORTED_MODULE_10__.default;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IssueEditWithToast);
 
 /***/ }),
@@ -1651,23 +1656,25 @@ __webpack_require__.r(__webpack_exports__);
 
  // -------- Issue Row Component ---------------
 
-const IssueRow = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.withRouter)(({
-  issue,
-  location: {
-    search
-  },
-  closeIssue,
-  index,
-  deleteIssue
-}) => {
+const IssueRow = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.withRouter)(props => {
   /**
-   * Represents each row of issue in a IssueTable.
-   * Props: issue: {[string]: any}, search: String
-   *        closeIssue: Func(index), index: Int
-   *        deleteIssue: Func(index)
-   * Parent: IssueTable
-   */
-  // tooltip elements to be used in OverLay
+    * const IssueRow = withRouter((props) => {...});
+    * Represents each row of issue in a IssueTable.
+    * Props: issue: {[string]: any}, search: String
+    *        closeIssue: Func(index), index: Int
+    *        deleteIssue: Func(index)
+    * Parent: IssueTable
+    */
+  const {
+    issue,
+    location: {
+      search
+    },
+    closeIssue,
+    index,
+    deleteIssue
+  } = props; // tooltip elements to be used in OverLay
+
   const closeTooltip = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Tooltip, {
     id: "close-tooltip"
   }, "Close Issue");
@@ -1929,6 +1936,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Contents_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Contents.jsx */ "./src/Contents.jsx");
 /* harmony import */ var _NavBar_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./NavBar.jsx */ "./src/NavBar.jsx");
 /* harmony import */ var _Footer_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Footer.jsx */ "./src/Footer.jsx");
+/* harmony import */ var _UserContext_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./UserContext.js */ "./src/UserContext.js");
+
 
 
 
@@ -1980,7 +1989,9 @@ class Page extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
       onUserChange: this.onUserChange
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__.Grid, {
       fluid: true
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Contents_jsx__WEBPACK_IMPORTED_MODULE_2__.default, null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Footer_jsx__WEBPACK_IMPORTED_MODULE_4__.default, null));
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_UserContext_js__WEBPACK_IMPORTED_MODULE_5__.default.Provider, {
+      value: user
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Contents_jsx__WEBPACK_IMPORTED_MODULE_2__.default, null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Footer_jsx__WEBPACK_IMPORTED_MODULE_4__.default, null));
   }
 
 }
@@ -2415,6 +2426,27 @@ class Toast extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
   }
 
 }
+
+/***/ }),
+
+/***/ "./src/UserContext.js":
+/*!****************************!*\
+  !*** ./src/UserContext.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+const UserContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createContext({
+  signedIn: false
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UserContext);
 
 /***/ }),
 
