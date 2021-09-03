@@ -350,8 +350,8 @@ class IssueEdit extends React.Component {
   }
 }
 
+IssueEdit.contextType = UserContext;
 const IssueEditWithToast = withToast(IssueEdit);
 IssueEditWithToast.fetchData = IssueEdit.fetchData;
-IssueEditWithToast.contextType = UserContext;
 
 export default IssueEditWithToast;

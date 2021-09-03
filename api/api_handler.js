@@ -46,9 +46,17 @@ const server = new ApolloServer({
 });
 
 function installHandler(app) {
-  const enableCors = (process.env.ENABLE_CORS || 'true') === 'true';
+  const enableCors = process.env.ENABLE_CORS || false;
+  let cors;
+  if (enableCors) {
+    const method = 'POST';
+    const origin = process.env.UI_SERVER_ORIGIN || 'http://localhost:8000';
+    cors = { origin, credentials: true, method };
+  } else {
+    cors = 'false';
+  }
   console.log('CORS settings:', enableCors);
-  server.applyMiddleware({ app, path: '/graphql', cors: enableCors });
+  server.applyMiddleware({ app, path: '/graphql', cors });
 }
 
 module.exports = { installHandler };

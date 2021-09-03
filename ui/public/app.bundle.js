@@ -1051,9 +1051,9 @@ var IssueEdit = /*#__PURE__*/function (_React$Component) {
   return IssueEdit;
 }(react__WEBPACK_IMPORTED_MODULE_0__.Component);
 
+IssueEdit.contextType = _UserContext_js__WEBPACK_IMPORTED_MODULE_8__.default;
 var IssueEditWithToast = (0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_7__.default)(IssueEdit);
 IssueEditWithToast.fetchData = IssueEdit.fetchData;
-IssueEditWithToast.contextType = _UserContext_js__WEBPACK_IMPORTED_MODULE_8__.default;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IssueEditWithToast);
 
 /***/ }),
@@ -3259,6 +3259,7 @@ function _graphQLFetch() {
             _context.next = 6;
             return isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0___default()(apiEndpoint, {
               method: 'POST',
+              credentials: 'include',
               headers: {
                 'Content-type': 'application/json'
               },

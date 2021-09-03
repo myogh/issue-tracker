@@ -878,9 +878,9 @@ class IssueEdit extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component)
 
 }
 
+IssueEdit.contextType = _UserContext_js__WEBPACK_IMPORTED_MODULE_10__.default;
 const IssueEditWithToast = (0,_withToast_jsx__WEBPACK_IMPORTED_MODULE_9__.default)(IssueEdit);
 IssueEditWithToast.fetchData = IssueEdit.fetchData;
-IssueEditWithToast.contextType = _UserContext_js__WEBPACK_IMPORTED_MODULE_10__.default;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (IssueEditWithToast);
 
 /***/ }),
@@ -2511,6 +2511,7 @@ async function graphQLFetch(query, variables = {}, showError = null) {
   try {
     const response = await isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0___default()(apiEndpoint, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-type': 'application/json'
       },

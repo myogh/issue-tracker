@@ -30,6 +30,7 @@ export default async function graphQLFetch(
   try {
     const response = await fetch(apiEndpoint, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-type': 'application/json',
       },
