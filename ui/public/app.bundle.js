@@ -2449,7 +2449,8 @@ var Page = /*#__PURE__*/function (_React$Component) {
                 apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
                 _context.next = 3;
                 return fetch("".concat(apiEndpoint, "/user"), {
-                  method: 'POST'
+                  method: 'POST',
+                  credentials: 'include'
                 });
 
               case 3:
@@ -2782,6 +2783,7 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
                 _context.next = 8;
                 return isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()("".concat(authEndpoint, "/signin"), {
                   method: 'POST',
+                  credentials: 'include',
                   headers: {
                     'Content-type': 'application/json'
                   },
@@ -2839,7 +2841,8 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
                 authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
                 _context2.next = 4;
                 return isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()("".concat(authEndpoint, "/signout"), {
-                  method: 'POST'
+                  method: 'POST',
+                  credentials: 'include'
                 });
 
               case 4:

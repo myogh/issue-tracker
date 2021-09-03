@@ -49,6 +49,7 @@ class SignInNavItem extends React.Component {
     try {
       const response = await fetch(`${authEndpoint}/signin`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-type': 'application/json',
         },
@@ -72,6 +73,7 @@ class SignInNavItem extends React.Component {
     const authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
     await fetch(`${authEndpoint}/signout`, {
       method: 'POST',
+      credentials: 'include',
     });
 
     onUserChange({ username: '', signedIn: false });

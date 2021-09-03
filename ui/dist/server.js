@@ -1978,7 +1978,8 @@ class Page extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
   async componentDidMount() {
     const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
     const response = await fetch(`${apiEndpoint}/user`, {
-      method: 'POST'
+      method: 'POST',
+      credentials: 'include'
     });
     const body = await response.text();
     const result = JSON.parse(body);
@@ -2176,6 +2177,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
     try {
       const response = await isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()(`${authEndpoint}/signin`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-type': 'application/json'
         },
@@ -2203,7 +2205,8 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
     } = this.props;
     const authEndpoint = window.ENV.UI_AUTH_ENDPOINT;
     await isomorphic_fetch__WEBPACK_IMPORTED_MODULE_1___default()(`${authEndpoint}/signout`, {
-      method: 'POST'
+      method: 'POST',
+      credentials: 'include'
     });
     onUserChange({
       username: '',

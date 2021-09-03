@@ -1,5 +1,6 @@
 const { AuthenticationError } = require('apollo-server-express');
 const Router = require('express');
+const cors = require('cors');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
@@ -17,6 +18,9 @@ if (!JWT_SECRET) {
 const routes = Router();
 
 routes.use(express.json());
+
+const origin = process.env.UI_SERVER_ORIGIN || 'http://localhost:8000';
+routes.use(cors({ origin, credentials: true }));
 
 function getUser(req) {
   /**
