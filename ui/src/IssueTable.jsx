@@ -8,10 +8,11 @@ import {
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { withRouter } from 'react-router-dom';
+import UserContext from './UserContext.js';
 
 // -------- Issue Row Component ---------------
 
-const IssueRow = withRouter((props) => {
+class IssueRowPlain extends React.Component {
   /**
     * const IssueRow = withRouter((props) => {...});
     * Represents each row of issue in a IssueTable.
@@ -20,75 +21,96 @@ const IssueRow = withRouter((props) => {
     *        deleteIssue: Func(index)
     * Parent: IssueTable
     */
-  const {
-    issue,
-    location: { search },
-    closeIssue,
-    index,
-    deleteIssue,
-  } = props;
-
-  // tooltip elements to be used in OverLay
-  const closeTooltip = <Tooltip id="close-tooltip">Close Issue</Tooltip>;
-  const deleteTooltip = <Tooltip id="delete-tooltip">Delete Issue</Tooltip>;
-  const editTooltip = <Tooltip id="edit-tooltip">Edit Issue</Tooltip>;
 
   // handles the event of click on close issue button in each row
-  function onClose(e) {
+  onClose(e) {
     e.preventDefault();
+    const { closeIssue, index } = this.props;
     closeIssue(index);
   }
 
   // handles the event of click on delete issue button in each row
-  function onDelete(e) {
+  onDelete(e) {
     e.preventDefault();
+    const { deleteIssue, index } = this.props;
     deleteIssue(index);
   }
 
-  const tableRow = (
-    <tr>
-      <td>{issue.id}</td>
-      <td>{issue.status}</td>
-      <td>{issue.owner}</td>
-      <td>{issue.created.toDateString()}</td>
-      <td>{issue.effort}</td>
-      <td>{issue.due ? issue.due.toDateString() : ' '}</td>
-      <td>{issue.title}</td>
-      <td>
-        <LinkContainer to={`/edit/${issue.id}`}>
-          <OverlayTrigger delayShow={1000} overlay={editTooltip}>
-            <Button bsSize="xsmall">
-              <Glyphicon glyph="edit" />
+  render() {
+    const {
+      issue,
+      location: { search },
+    } = this.props;
+
+    const user = this.context;
+
+    // tooltip elements to be used in OverLay
+    const closeTooltip = <Tooltip id="close-tooltip">Close Issue</Tooltip>;
+    const deleteTooltip = <Tooltip id="delete-tooltip">Delete Issue</Tooltip>;
+    const editTooltip = <Tooltip id="edit-tooltip">Edit Issue</Tooltip>;
+
+    const tableRow = (
+      <tr>
+        <td>{issue.id}</td>
+        <td>{issue.status}</td>
+        <td>{issue.owner}</td>
+        <td>{issue.created.toDateString()}</td>
+        <td>{issue.effort}</td>
+        <td>{issue.due ? issue.due.toDateString() : ' '}</td>
+        <td>{issue.title}</td>
+        <td>
+          <LinkContainer to={`/edit/${issue.id}`}>
+            <OverlayTrigger delayShow={1000} overlay={editTooltip}>
+              <Button bsSize="xsmall">
+                <Glyphicon glyph="edit" />
+              </Button>
+            </OverlayTrigger>
+          </LinkContainer>
+          <OverlayTrigger
+            delayShow={1000}
+            overlay={closeTooltip}
+            placement="top"
+          >
+            <Button
+              disabled={!user.signedIn}
+              bsSize="xsmall"
+              type="button"
+              onClick={this.onClose}
+            >
+              <Glyphicon glyph="remove" />
             </Button>
           </OverlayTrigger>
-        </LinkContainer>
-        <OverlayTrigger
-          delayShow={1000}
-          overlay={closeTooltip}
-          placement="top"
-        >
-          <Button bsSize="xsmall" type="button" onClick={onClose}>
-            <Glyphicon glyph="remove" />
-          </Button>
-        </OverlayTrigger>
-        <OverlayTrigger
-          delayShow={1000}
-          overlay={deleteTooltip}
-          placement="top"
-        >
-          <Button type="button" bsSize="xsmall" onClick={onDelete}>
-            <Glyphicon glyph="trash" />
-          </Button>
-        </OverlayTrigger>
-      </td>
-    </tr>
-  );
+          <OverlayTrigger
+            delayShow={1000}
+            overlay={deleteTooltip}
+            placement="top"
+          >
+            <Button
+              disabled={!user.signedIn}
+              type="button"
+              bsSize="xsmall"
+              onClick={this.onDelete}
+            >
+              <Glyphicon glyph="trash" />
+            </Button>
+          </OverlayTrigger>
+        </td>
+      </tr>
+    );
 
-  const selectedLocation = { pathname: `/issues/${issue.id}`, search };
+    const selectedLocation = { pathname: `/issues/${issue.id}`, search };
 
-  // each tableRow becomes a link to display description of each id
-  return <LinkContainer to={selectedLocation}>{tableRow}</LinkContainer>;
-});
+    // each tableRow becomes a link to display description of each id
+    return <LinkContainer to={selectedLocation}>{tableRow}</LinkContainer>;
+  }
+}
+
+// this is due to the fact that the wrapped component IssueRow is a stateless
+// component based on the withRouter documentation. That's why you can't assign
+// to it. contextType is meant to be a static class method.
+IssueRowPlain.contextType = UserContext;
+const IssueRow = withRouter(IssueRowPlain);
+delete IssueRow.contextType;
 
 // --------- Issue Table Component -----------------
 
