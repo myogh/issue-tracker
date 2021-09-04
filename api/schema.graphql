@@ -19,6 +19,11 @@ type Issue {
   description: String
 }
 
+type User {
+  signedIn: Boolean!
+  username: String
+}
+
 "Toned down Issue, used as inputs, without server generated values."
 input IssueInputs {
   title: String!
@@ -61,6 +66,7 @@ type IssueListWithPages {
 
 type Query {
   about: String!
+  user: User!
   issueList(
     status: StatusType 
     effortMin: Int 
