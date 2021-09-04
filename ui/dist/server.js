@@ -51,10 +51,12 @@ async function render(req, res) {
     const index = req.path.indexOf('?');
     const search = index !== -1 ? req.path.substr(index) : null; // fetch data and store it in initialData.
 
-    initialData = await activeRoute.component.fetchData(match, search);
+    initialData = await activeRoute.component.fetchData(match, search, null);
   }
 
-  _src_store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData = initialData; // ------- render the routed element to markup -----------------
+  const userData = await _src_Page_jsx__WEBPACK_IMPORTED_MODULE_4__.default.fetchData(req.headers.cookie);
+  _src_store_js__WEBPACK_IMPORTED_MODULE_6__.default.initialData = initialData;
+  _src_store_js__WEBPACK_IMPORTED_MODULE_6__.default.userData = userData; // ------- render the routed element to markup -----------------
   // this object signfies any redirects with the help of StaticRouter
 
   const context = {}; // StaticRouter renders one particular component based on its location props
@@ -70,7 +72,7 @@ async function render(req, res) {
     res.redirect(301, context.url);
   } else {
     // send the fetched data alongside the markup
-    res.send((0,_template_js__WEBPACK_IMPORTED_MODULE_3__.default)(body, initialData));
+    res.send((0,_template_js__WEBPACK_IMPORTED_MODULE_3__.default)(body, initialData, userData));
   }
 }
 
@@ -92,7 +94,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var serialize_javascript__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! serialize-javascript */ "serialize-javascript");
 /* harmony import */ var serialize_javascript__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(serialize_javascript__WEBPACK_IMPORTED_MODULE_0__);
 
-function template(body, data) {
+function template(body, initialData, userData) {
   /**
    * Creat a html template for server-side rendering.
    * Params - body: markup string from ReactDOMServer.renderToString()
@@ -114,7 +116,10 @@ table.table-hover tr {cursor: pointer;}
 <body>
 <!-- Page generated from template. -->
 <div id="contents">${body}</div>
-<script>window.__INITIAL_DATA__ = ${serialize_javascript__WEBPACK_IMPORTED_MODULE_0___default()(data)}</script>
+<script>
+  window.__INITIAL_DATA__ = ${serialize_javascript__WEBPACK_IMPORTED_MODULE_0___default()(initialData)}
+  window.__USER_DATA__ = ${serialize_javascript__WEBPACK_IMPORTED_MODULE_0___default()(userData)}
+</script>
 <script src="/env.js"></script>
 <script src="/vendor.bundle.js"></script>
 <script src="/app.bundle.js"></script>
@@ -1957,6 +1962,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _NavBar_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./NavBar.jsx */ "./src/NavBar.jsx");
 /* harmony import */ var _Footer_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Footer.jsx */ "./src/Footer.jsx");
 /* harmony import */ var _UserContext_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./UserContext.js */ "./src/UserContext.js");
+/* harmony import */ var _graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./graphQLFetch.js */ "./src/graphQLFetch.js");
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
+
+
 
 
 
@@ -1964,35 +1973,33 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Page extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
+  static async fetchData(cookie) {
+    const query = 'query { user { username signedIn } }';
+    const data = await (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_6__.default)(query, null, null, cookie);
+    return data;
+  }
+
   constructor() {
     super();
+    const user = _store_js__WEBPACK_IMPORTED_MODULE_7__.default.userData ? _store_js__WEBPACK_IMPORTED_MODULE_7__.default.userData.user : null;
+    delete _store_js__WEBPACK_IMPORTED_MODULE_7__.default.userData;
     this.state = {
-      user: {
-        signedIn: false,
-        username: ''
-      }
+      user
     };
     this.onUserChange = this.onUserChange.bind(this);
   }
 
   async componentDidMount() {
-    const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
-    const response = await fetch(`${apiEndpoint}/user`, {
-      method: 'POST',
-      credentials: 'include'
-    });
-    const body = await response.text();
-    const result = JSON.parse(body);
     const {
-      signedIn
-    } = result;
-    const username = result.username ? result.username : '';
-    this.setState({
-      user: {
-        signedIn,
-        username
-      }
-    });
+      user
+    } = this.state;
+
+    if (user === null) {
+      const data = await Page.fetchData();
+      this.setState({
+        user: data.user
+      });
+    }
   }
 
   onUserChange(user) {
@@ -2005,6 +2012,7 @@ class Page extends (react__WEBPACK_IMPORTED_MODULE_0___default().Component) {
     const {
       user
     } = this.state;
+    if (user === null) return null;
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_NavBar_jsx__WEBPACK_IMPORTED_MODULE_3__.default, {
       user: user,
       onUserChange: this.onUserChange
@@ -2294,7 +2302,7 @@ class SignInNavItem extends (react__WEBPACK_IMPORTED_MODULE_0___default().Compon
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.ControlLabel, null, "Username"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.FormControl, {
       type: "text",
       name: "username",
-      value: user.username,
+      value: user.username || '',
       onChange: this.handleChange
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.FormControl.Feedback, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.HelpBlock, null, "More than three characters.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__.FormGroup, {
       controlId: "formPassword"
@@ -2495,7 +2503,7 @@ function jsonDateReviver(_, value) {
   return value;
 }
 
-async function graphQLFetch(query, variables = {}, showError = null) {
+async function graphQLFetch(query, variables = {}, showError = null, cookie = null) {
   /**
    * Fetches list of issues from the server.
    * Displays errors based on the result.
@@ -2509,12 +2517,14 @@ async function graphQLFetch(query, variables = {}, showError = null) {
   const apiEndpoint =  false ? 0 : process.env.UI_API_ENDPOINT;
 
   try {
+    const headers = new Headers({
+      'Content-type': 'application/json'
+    });
+    if (cookie) headers.append('Cookie', cookie);
     const response = await isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0___default()(apiEndpoint, {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-type': 'application/json'
-      },
+      headers,
       body: JSON.stringify({
         query,
         variables

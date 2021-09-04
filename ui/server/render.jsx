@@ -32,10 +32,13 @@ async function render(req, res) {
     const search = index !== -1 ? req.path.substr(index) : null;
 
     // fetch data and store it in initialData.
-    initialData = await activeRoute.component.fetchData(match, search);
+    initialData = await activeRoute.component.fetchData(match, search, null);
   }
 
+  const userData = await Page.fetchData(req.headers.cookie);
+
   store.initialData = initialData;
+  store.userData = userData;
 
   // ------- render the routed element to markup -----------------
 
@@ -58,7 +61,7 @@ async function render(req, res) {
     res.redirect(301, context.url);
   } else {
     // send the fetched data alongside the markup
-    res.send(template(body, initialData));
+    res.send(template(body, initialData, userData));
   }
 }
 

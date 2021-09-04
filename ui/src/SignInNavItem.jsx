@@ -140,7 +140,7 @@ class SignInNavItem extends React.Component {
                 <FormControl
                   type="text"
                   name="username"
-                  value={user.username}
+                  value={user.username || ''}
                   onChange={this.handleChange}
                 />
                 <FormControl.Feedback />

@@ -12,6 +12,8 @@ import Page from '../src/Page.jsx';
 // html in the global store object.
 // eslint-disable-next-line no-underscore-dangle
 store.initialData = window.__INITIAL_DATA__;
+// eslint-disable-next-line no-underscore-dangle
+store.userData = window.__USER_DATA__;
 
 const element = (
   <Router>

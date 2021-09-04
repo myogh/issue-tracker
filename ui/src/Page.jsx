@@ -6,26 +6,30 @@ import Contents from './Contents.jsx';
 import NavBar from './NavBar.jsx';
 import Footer from './Footer.jsx';
 import UserContext from './UserContext.js';
+import graphQLFetch from './graphQLFetch.js';
+import store from './store.js';
 
 export default class Page extends React.Component {
+  static async fetchData(cookie) {
+    const query = 'query { user { username signedIn } }';
+    const data = await graphQLFetch(query, null, null, cookie);
+    return data;
+  }
+
   constructor() {
     super();
-    this.state = { user: { signedIn: false, username: '' } };
+    const user = store.userData ? store.userData.user : null;
+    delete store.userData;
+    this.state = { user };
     this.onUserChange = this.onUserChange.bind(this);
   }
 
   async componentDidMount() {
-    const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
-    const response = await fetch(`${apiEndpoint}/user`, {
-      method: 'POST',
-      credentials: 'include',
-    });
-    const body = await response.text();
-    const result = JSON.parse(body);
-
-    const { signedIn } = result;
-    const username = result.username ? result.username : '';
-    this.setState({ user: { signedIn, username } });
+    const { user } = this.state;
+    if (user === null) {
+      const data = await Page.fetchData();
+      this.setState({ user: data.user });
+    }
   }
 
   onUserChange(user) {
@@ -34,6 +38,7 @@ export default class Page extends React.Component {
 
   render() {
     const { user } = this.state;
+    if (user === null) return null;
 
     return (
       <div>

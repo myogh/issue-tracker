@@ -1,6 +1,6 @@
 import serialize from 'serialize-javascript';
 
-export default function template(body, data) {
+export default function template(body, initialData, userData) {
   /**
    * Creat a html template for server-side rendering.
    * Params - body: markup string from ReactDOMServer.renderToString()
@@ -22,7 +22,10 @@ table.table-hover tr {cursor: pointer;}
 <body>
 <!-- Page generated from template. -->
 <div id="contents">${body}</div>
-<script>window.__INITIAL_DATA__ = ${serialize(data)}</script>
+<script>
+  window.__INITIAL_DATA__ = ${serialize(initialData)}
+  window.__USER_DATA__ = ${serialize(userData)}
+</script>
 <script src="/env.js"></script>
 <script src="/vendor.bundle.js"></script>
 <script src="/app.bundle.js"></script>

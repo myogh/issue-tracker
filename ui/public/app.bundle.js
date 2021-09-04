@@ -28,7 +28,9 @@ __webpack_require__.r(__webpack_exports__);
 // html in the global store object.
 // eslint-disable-next-line no-underscore-dangle
 
-_src_store_js__WEBPACK_IMPORTED_MODULE_3__.default.initialData = window.__INITIAL_DATA__;
+_src_store_js__WEBPACK_IMPORTED_MODULE_3__.default.initialData = window.__INITIAL_DATA__; // eslint-disable-next-line no-underscore-dangle
+
+_src_store_js__WEBPACK_IMPORTED_MODULE_3__.default.userData = window.__USER_DATA__;
 var element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__.BrowserRouter, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(_src_Page_jsx__WEBPACK_IMPORTED_MODULE_4__.default, null)); // hydrate only adds event handlers to the server-rendered document.
 
 react_dom__WEBPACK_IMPORTED_MODULE_2__.hydrate(element, document.getElementById('contents')); // hot module replacement
@@ -2378,11 +2380,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Page)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Grid.js");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/es/Grid.js");
 /* harmony import */ var _Contents_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Contents.jsx */ "./src/Contents.jsx");
 /* harmony import */ var _NavBar_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NavBar.jsx */ "./src/NavBar.jsx");
 /* harmony import */ var _Footer_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Footer.jsx */ "./src/Footer.jsx");
 /* harmony import */ var _UserContext_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./UserContext.js */ "./src/UserContext.js");
+/* harmony import */ var _graphQLFetch_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./graphQLFetch.js */ "./src/graphQLFetch.js");
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2416,6 +2420,8 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
+
 var Page = /*#__PURE__*/function (_React$Component) {
   _inherits(Page, _React$Component);
 
@@ -2427,11 +2433,10 @@ var Page = /*#__PURE__*/function (_React$Component) {
     _classCallCheck(this, Page);
 
     _this = _super.call(this);
+    var user = _store_js__WEBPACK_IMPORTED_MODULE_6__.default.userData ? _store_js__WEBPACK_IMPORTED_MODULE_6__.default.userData.user : null;
+    delete _store_js__WEBPACK_IMPORTED_MODULE_6__.default.userData;
     _this.state = {
-      user: {
-        signedIn: false,
-        username: ''
-      }
+      user: user
     };
     _this.onUserChange = _this.onUserChange.bind(_assertThisInitialized(_this));
     return _this;
@@ -2441,36 +2446,28 @@ var Page = /*#__PURE__*/function (_React$Component) {
     key: "componentDidMount",
     value: function () {
       var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var apiEndpoint, response, body, result, signedIn, username;
+        var user, data;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
-                _context.next = 3;
-                return fetch("".concat(apiEndpoint, "/user"), {
-                  method: 'POST',
-                  credentials: 'include'
-                });
+                user = this.state.user;
 
-              case 3:
-                response = _context.sent;
-                _context.next = 6;
-                return response.text();
+                if (!(user === null)) {
+                  _context.next = 6;
+                  break;
+                }
+
+                _context.next = 4;
+                return Page.fetchData();
+
+              case 4:
+                data = _context.sent;
+                this.setState({
+                  user: data.user
+                });
 
               case 6:
-                body = _context.sent;
-                result = JSON.parse(body);
-                signedIn = result.signedIn;
-                username = result.username ? result.username : '';
-                this.setState({
-                  user: {
-                    signedIn: signedIn,
-                    username: username
-                  }
-                });
-
-              case 11:
               case "end":
                 return _context.stop();
             }
@@ -2495,15 +2492,47 @@ var Page = /*#__PURE__*/function (_React$Component) {
     key: "render",
     value: function render() {
       var user = this.state.user;
+      if (user === null) return null;
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_NavBar_jsx__WEBPACK_IMPORTED_MODULE_2__.default, {
         user: user,
         onUserChange: this.onUserChange
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_5__.default, {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__.default, {
         fluid: true
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_UserContext_js__WEBPACK_IMPORTED_MODULE_4__.default.Provider, {
         value: user
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_Contents_jsx__WEBPACK_IMPORTED_MODULE_1__.default, null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_Footer_jsx__WEBPACK_IMPORTED_MODULE_3__.default, null));
     }
+  }], [{
+    key: "fetchData",
+    value: function () {
+      var _fetchData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(cookie) {
+        var query, data;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                query = 'query { user { username signedIn } }';
+                _context2.next = 3;
+                return (0,_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_5__.default)(query, null, null, cookie);
+
+              case 3:
+                data = _context2.sent;
+                return _context2.abrupt("return", data);
+
+              case 5:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+
+      function fetchData(_x) {
+        return _fetchData.apply(this, arguments);
+      }
+
+      return fetchData;
+    }()
   }]);
 
   return Page;
@@ -2938,7 +2967,7 @@ var SignInNavItem = /*#__PURE__*/function (_React$Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_9__.default, null, "Username"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default, {
         type: "text",
         name: "username",
-        value: user.username,
+        value: user.username || '',
         onChange: this.handleChange
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_10__.default.Feedback, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_11__.default, null, "More than three characters.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__.default, {
         controlId: "formPassword"
@@ -3230,7 +3259,9 @@ function _graphQLFetch() {
   _graphQLFetch = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(query) {
     var variables,
         showError,
+        cookie,
         apiEndpoint,
+        headers,
         response,
         body,
         result,
@@ -3243,6 +3274,7 @@ function _graphQLFetch() {
           case 0:
             variables = _args.length > 1 && _args[1] !== undefined ? _args[1] : {};
             showError = _args.length > 2 && _args[2] !== undefined ? _args[2] : null;
+            cookie = _args.length > 3 && _args[3] !== undefined ? _args[3] : null;
 
             /**
              * Fetches list of issues from the server.
@@ -3255,26 +3287,28 @@ function _graphQLFetch() {
             // __isBrowser__ constant formed at Webpack bundling process
             // eslint-disable-next-line no-undef
             apiEndpoint =  true ? window.ENV.UI_API_ENDPOINT : 0;
-            _context.prev = 3;
-            _context.next = 6;
+            _context.prev = 4;
+            headers = new Headers({
+              'Content-type': 'application/json'
+            });
+            if (cookie) headers.append('Cookie', cookie);
+            _context.next = 9;
             return isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0___default()(apiEndpoint, {
               method: 'POST',
               credentials: 'include',
-              headers: {
-                'Content-type': 'application/json'
-              },
+              headers: headers,
               body: JSON.stringify({
                 query: query,
                 variables: variables
               })
             });
 
-          case 6:
+          case 9:
             response = _context.sent;
-            _context.next = 9;
+            _context.next = 12;
             return response.text();
 
-          case 9:
+          case 12:
             body = _context.sent;
             result = JSON.parse(body, jsonDateReviver);
 
@@ -3291,19 +3325,19 @@ function _graphQLFetch() {
 
             return _context.abrupt("return", result.data);
 
-          case 15:
-            _context.prev = 15;
-            _context.t0 = _context["catch"](3);
+          case 18:
+            _context.prev = 18;
+            _context.t0 = _context["catch"](4);
             // cathing the transport error
             if (showError) showError("Error in sending data to server: ".concat(_context.t0.message));
             return _context.abrupt("return", null);
 
-          case 19:
+          case 22:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[3, 15]]);
+    }, _callee, null, [[4, 18]]);
   }));
   return _graphQLFetch.apply(this, arguments);
 }
