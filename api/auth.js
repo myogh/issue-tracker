@@ -20,6 +20,10 @@ const routes = Router();
 routes.use(express.json());
 
 const origin = process.env.UI_SERVER_ORIGIN || 'http://localhost:8000';
+
+// this adds the following headers in the response
+// Access-Control-Allow-Origin: UIServerOrigin
+// Access-Control-Allow-Credentials: true
 routes.use(cors({ origin, credentials: true }));
 
 function getUser(req) {
@@ -76,7 +80,10 @@ routes.post('/signin', async (req, res) => {
     };
 
     const token = jwt.sign(credentials, JWT_SECRET);
-    res.cookie('jwt', token, { httpOnly: true });
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      domain: process.env.COOKIE_DOMAIN,
+    });
     res.json(credentials);
   } else {
     // refues to authroize
