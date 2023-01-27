@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  mongodb:
+    image: mongo:5.0
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=abcde
+      - MONGO_INITDB_ROOT_PASSWORD=fghijk
+  mongo-seed:
+    build: ./mongo-seed
+    depends_on:
+      - mongodb
+  api:
+    build: ./tracker-api/
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+  ui:
+    build: ./tracker-ui/
+    ports:
+      - "8000:8000"

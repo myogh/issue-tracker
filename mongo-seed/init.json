@@ -1,0 +1,668 @@
+[
+  {
+    "id": 2,
+    "status": "Assigned",
+    "owner": "Eddie John",
+    "effort": 14,
+    "created": {
+      "$date": {
+        "$numberLong": "1547596800000"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1548979200000"
+      }
+    },
+    "title": "Missing bottom border on panel",
+    "description": "There needs to be a border in the bottom in the panel that appears when clicking on Add"
+  },
+  {
+    "id": 3,
+    "title": "Viverra justo nec ultrices dui",
+    "created": {
+      "$date": {
+        "$numberLong": "1627114614231"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1626337014231"
+      }
+    },
+    "owner": "Peter",
+    "status": "New",
+    "effort": 19,
+    "description": "Some example description."
+  },
+  {
+    "id": 4,
+    "title": "Tincidunt nunc pulvinar sapienso",
+    "created": {
+      "$date": {
+        "$numberLong": "1629533814953"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1629533814953"
+      }
+    },
+    "owner": "John Wick",
+    "status": "Closed",
+    "effort": 4,
+    "description": "// no description yet"
+  },
+  {
+    "id": 5,
+    "title": "Risus sed vulputate odio",
+    "created": {
+      "$date": {
+        "$numberLong": "1631175415458"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1629101815458"
+      }
+    },
+    "owner": "Chris",
+    "status": "New",
+    "effort": 6,
+    "description": "// no description yet"
+  },
+  {
+    "id": 6,
+    "title": "Viverra justo nec ultrices dui",
+    "created": {
+      "$date": {
+        "$numberLong": "1628237815864"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1626596215864"
+      }
+    },
+    "owner": "Chris",
+    "status": "New",
+    "effort": 5,
+    "description": "// no description yet"
+  },
+  {
+    "id": 8,
+    "title": "Vitae turpis massa sed",
+    "created": {
+      "$date": {
+        "$numberLong": "1630657016681"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1627719416681"
+      }
+    },
+    "owner": "Peter",
+    "status": "New",
+    "effort": 8,
+    "description": "// no description yet"
+  },
+  {
+    "id": 9,
+    "title": "Tincidunt nunc pulvinar sapien",
+    "created": {
+      "$date": {
+        "$numberLong": "1627460217092"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1628324217092"
+      }
+    },
+    "owner": "Chris",
+    "status": "Assigned",
+    "effort": 2,
+    "description": "// no description yet"
+  },
+  {
+    "id": 10,
+    "title": "Tincidunt nunc pulvinar sapien",
+    "created": {
+      "$date": {
+        "$numberLong": "1628583417504"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1627892217504"
+      }
+    },
+    "owner": "Bob",
+    "status": "Assigned",
+    "effort": 16,
+    "description": "// no description yet"
+  },
+  {
+    "id": 11,
+    "title": "Leo urna molestie at elementum",
+    "created": {
+      "$date": {
+        "$numberLong": "1630484217913"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1627892217913"
+      }
+    },
+    "owner": "Bob",
+    "status": "Closed",
+    "effort": 11,
+    "description": "// no description yett"
+  },
+  {
+    "id": 12,
+    "title": "Leo urna molestie at elementum",
+    "created": {
+      "$date": {
+        "$numberLong": "1630570618321"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1629015418321"
+      }
+    },
+    "owner": "Chris",
+    "status": "New",
+    "effort": 2,
+    "description": "// no description yet"
+  },
+  {
+    "id": 13,
+    "title": "Risus sed vulputate odio",
+    "created": {
+      "$date": {
+        "$numberLong": "1628151418731"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1628065018731"
+      }
+    },
+    "owner": "Bob",
+    "status": "Closed",
+    "effort": 18,
+    "description": "// no description yet"
+  },
+  {
+    "id": 14,
+    "title": "Tincidunt nunc pulvinar sapien",
+    "created": {
+      "$date": {
+        "$numberLong": "1626596219141"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1629447419141"
+      }
+    },
+    "owner": "Chris",
+    "status": "Closed",
+    "effort": 9,
+    "description": "// no description yet"
+  },
+  {
+    "id": 15,
+    "title": "Metus aliquam eleifend mi",
+    "created": {
+      "$date": {
+        "$numberLong": "1629533819552"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1628065019552"
+      }
+    },
+    "owner": "Chris",
+    "status": "New",
+    "effort": 3,
+    "description": "// no description yet"
+  },
+  {
+    "id": 16,
+    "title": "Vitae turpis massa sed",
+    "created": {
+      "$date": {
+        "$numberLong": "1629447419960"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1628756219961"
+      }
+    },
+    "owner": "Chris",
+    "status": "Fixed",
+    "effort": 18,
+    "description": "// no description yet"
+  },
+  {
+    "id": 17,
+    "title": "Metus aliquam eleifend mi",
+    "created": {
+      "$date": {
+        "$numberLong": "1629188220369"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1627892220369"
+      }
+    },
+    "owner": "Chris",
+    "status": "New",
+    "effort": 12,
+    "description": "// no description yet"
+  },
+  {
+    "id": 18,
+    "title": "Metus aliquam eleifend mi",
+    "created": {
+      "$date": {
+        "$numberLong": "1630397820780"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1626164220780"
+      }
+    },
+    "owner": "Bob",
+    "status": "New",
+    "effort": 5,
+    "description": "// no description yet"
+  },
+  {
+    "id": 19,
+    "title": "Viverra justo nec ultrices dui",
+    "created": {
+      "$date": {
+        "$numberLong": "1626423421194"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1628583421194"
+      }
+    },
+    "owner": "Bob",
+    "status": "Closed",
+    "effort": 10,
+    "description": "// no description yet"
+  },
+  {
+    "id": 20,
+    "title": "Tincidunt nunc pulvinar sapien",
+    "created": {
+      "$date": {
+        "$numberLong": "1629015421601"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1629879421601"
+      }
+    },
+    "owner": "Peter",
+    "status": "New",
+    "effort": 19,
+    "description": "// no description yet"
+  },
+  {
+    "id": 21,
+    "title": "Vitae turpis massa sed",
+    "created": {
+      "$date": {
+        "$numberLong": "1626423422008"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1627114622008"
+      }
+    },
+    "owner": "Victor",
+    "status": "Closed",
+    "effort": 3,
+    "description": "// no description yet"
+  },
+  {
+    "id": 22,
+    "title": "Metus aliquam eleifend mi",
+    "created": {
+      "$date": {
+        "$numberLong": "1628324222315"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1629706622315"
+      }
+    },
+    "owner": "Bob",
+    "status": "Assigned",
+    "effort": 14,
+    "description": "// no description yet"
+  },
+  {
+    "id": 23,
+    "title": "Risus sed vulputate odio",
+    "created": {
+      "$date": {
+        "$numberLong": "1630657022612"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1628410622612"
+      }
+    },
+    "owner": "Victor",
+    "status": "Fixed",
+    "effort": 18,
+    "description": "// no description yet"
+  },
+  {
+    "id": 24,
+    "title": "Metus aliquam eleifend mi",
+    "created": {
+      "$date": {
+        "$numberLong": "1630484223032"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1628929023032"
+      }
+    },
+    "owner": "Victor",
+    "status": "Assigned",
+    "effort": 6,
+    "description": "// no description yet"
+  },
+  {
+    "id": 25,
+    "title": "Leo urna molestie at elementum",
+    "created": {
+      "$date": {
+        "$numberLong": "1627460223467"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1630052223467"
+      }
+    },
+    "owner": "John",
+    "status": "Assigned",
+    "effort": 15,
+    "description": "// no description yet"
+  },
+  {
+    "id": 26,
+    "title": "Tincidunt nunc pulvinar sapien",
+    "created": {
+      "$date": {
+        "$numberLong": "1626682623851"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1628497023851"
+      }
+    },
+    "owner": "Victor",
+    "status": "Closed",
+    "effort": 14,
+    "description": "// no description yet"
+  },
+  {
+    "id": 27,
+    "title": "Metus aliquam eleifend mi",
+    "created": {
+      "$date": {
+        "$numberLong": "1630311424261"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1627028224261"
+      }
+    },
+    "owner": "Bob",
+    "status": "Closed",
+    "effort": 2,
+    "description": "// no description yet"
+  },
+  {
+    "id": 28,
+    "title": "Vitae turpis massa sed",
+    "created": {
+      "$date": {
+        "$numberLong": "1626423424678"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1626855424678"
+      }
+    },
+    "owner": "Bob",
+    "status": "New",
+    "effort": 7,
+    "description": "// no description yet"
+  },
+  {
+    "id": 29,
+    "title": "Risus sed vulputate odio",
+    "created": {
+      "$date": {
+        "$numberLong": "1630657025080"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1630570625080"
+      }
+    },
+    "owner": "Bob",
+    "status": "New",
+    "effort": 4,
+    "description": "// no description yet"
+  },
+  {
+    "id": 30,
+    "title": "Vitae turpis massa sed",
+    "created": {
+      "$date": {
+        "$numberLong": "1629015425490"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1626769025490"
+      }
+    },
+    "owner": "Chris",
+    "status": "Assigned",
+    "effort": 2,
+    "description": "// no description yet"
+  },
+  {
+    "id": 31,
+    "title": "Leo urna molestie at elementum",
+    "created": {
+      "$date": {
+        "$numberLong": "1627805825824"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1628410625824"
+      }
+    },
+    "owner": "John",
+    "status": "Closed",
+    "effort": 17,
+    "description": "// no description yet"
+  },
+  {
+    "id": 32,
+    "title": "Leo urna molestie at elementum",
+    "created": {
+      "$date": {
+        "$numberLong": "1628497026231"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1627373826231"
+      }
+    },
+    "owner": "Peter",
+    "status": "New",
+    "effort": 1,
+    "description": "// no description yet"
+  },
+  {
+    "id": 33,
+    "title": "Vitae turpis massa sed",
+    "created": {
+      "$date": {
+        "$numberLong": "1627460226840"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1630138626840"
+      }
+    },
+    "owner": "Bob",
+    "status": "Closed",
+    "effort": 16,
+    "description": "// no description yet"
+  },
+  {
+    "id": 34,
+    "title": "Risus sed vulputate odio",
+    "created": {
+      "$date": {
+        "$numberLong": "1627633027155"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1631002627155"
+      }
+    },
+    "owner": "Peter",
+    "status": "New",
+    "effort": 15,
+    "description": "// no description yet"
+  },
+  {
+    "id": 35,
+    "title": "Lorem ipsum dolor sit amet",
+    "created": {
+      "$date": {
+        "$numberLong": "1629533827541"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1629447427541"
+      }
+    },
+    "owner": "Chris",
+    "status": "Closed",
+    "effort": 10,
+    "description": "// no description yet"
+  },
+  {
+    "id": 36,
+    "title": "Mollis aliquam ut porttitor",
+    "created": {
+      "$date": {
+        "$numberLong": "1628669827960"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1631261827960"
+      }
+    },
+    "owner": "Peter",
+    "status": "New",
+    "effort": 16,
+    "description": "// no description yet"
+  },
+  {
+    "id": 37,
+    "title": "Lorem ipsum dolor sit amet",
+    "created": {
+      "$date": {
+        "$numberLong": "1630311428359"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1628324228359"
+      }
+    },
+    "owner": "Victor",
+    "status": "Fixed",
+    "effort": 8,
+    "description": "// no description yet"
+  },
+  {
+    "id": 38,
+    "title": "Risus sed vulputate odio",
+    "created": {
+      "$date": {
+        "$numberLong": "1628151428766"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1626250628766"
+      }
+    },
+    "owner": "John",
+    "status": "New",
+    "effort": 16,
+    "description": "// no description yet"
+  },
+  {
+    "id": 39,
+    "title": "Metus aliquam eleifend mi",
+    "created": {
+      "$date": {
+        "$numberLong": "1630052229180"
+      }
+    },
+    "due": {
+      "$date": {
+        "$numberLong": "1631175429180"
+      }
+    },
+    "owner": "Bob",
+    "status": "Closed",
+    "effort": 12,
+    "description": "// no description yet"
+  }
+]

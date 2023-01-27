@@ -1,0 +1,125 @@
+/* Overwriting the styles of bootstrap */
+/* All the custome classnames will start with ax */
+
+/* -------- Nav Bar ----------------------------- */
+
+.amNavbar {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: #383b4a;
+  border-radius: 0px;
+  border-color: transparent;
+  margin-bottom: 30px;
+}
+
+/* for home button */
+.navbar-default .navbar-nav>li>a, 
+.navbar-default .navbar-nav>li>a:focus {
+  color: white;
+  margin: 0 5px;
+}
+
+/* for sign in button */
+.navbar-default .navbar-nav>li>a:hover {
+  color: white;
+  background-color: #474b5b;
+  border-radius: 7px;
+  margin: 0 5px;
+}
+
+/* ----- for about link ------ */
+.navbar-nav>.open>a, .navbar-nav>.open>a:focus,
+.navbar-nav>.open>a:hover {
+  color: white;
+  background-color: #474b5b;
+  border-radius: 7px;
+}
+
+/* ----- for navigation links ------ */
+.navbar-default .navbar-nav>.active>a, 
+.navbar-default .navbar-nav>.active>a:focus {
+  color: white;
+  font-weight: bold;
+  background-color: #5b5e6f75;
+  border-radius: 7px;
+  margin: 0 5px;
+}
+
+.navbar-default .navbar-nav>.active>a:hover {
+  color: white;
+  background-color: #5b5e6f75;
+  border-radius: 7px;
+  margin: 0 5px;
+}
+
+.navbar-default .navbar-form {
+  border-color: #474b5b;
+}
+
+/* ------ Table Styles --------------- */
+
+.table {
+  margin-bottom: 0px;
+}
+
+.table-responsive {
+  border: 0.5px solid #d6d6d6;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin: 0 auto;
+}
+
+table.table-hover thead>tr {
+  cursor: initial;
+}
+
+.table>thead>tr>th {
+  text-align: center;
+  font-size: 1.4rem;
+  border-bottom: transparent;
+}
+
+.table>tbody>tr>td {
+  text-align: center;
+  border-top: 0.5px solid #e3e3e3;
+  color: #383b4a;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.table>tbody>tr>td .actionBtn {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+/* ----- Pagination ----------- */
+
+.pagination {
+  display: flex;
+  padding-left: 0;
+  margin: 20px 0;
+  border-radius: 4px;
+  justify-content: center;
+}
+
+.pagination>li>a {
+  color: #636c99;
+}
+
+.pagination>.active>a, .pagination>.active>a:focus,
+.pagination>.active>a:hover {
+  background-color: #636c99;
+  border-color: #c8e5ff;
+}
+
+/* ---- Search Bar ---------- */
+
+.searchBarx {
+  max-width: 500px;
+}
+
+@media (min-width: 768px) {
+  .searchBarx {
+    margin-right: 20%;
+  } 
+}
